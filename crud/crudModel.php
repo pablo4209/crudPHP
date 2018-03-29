@@ -8,6 +8,8 @@
 	IMPORTANTE!
 	el indice de la tabla siempre debe ser el primer campo, porque asi se asume en la clase,
 	sin importar si se visualiza o no
+	- el campo indice siempre se mostrara disabled
+
 	--------------
 
 	$c = new Crud( 	nombre_tabla,		//string con el nombre de la tabla
@@ -21,6 +23,8 @@
 							)
 					)
 				);
+
+
 */
 
 require_once( 'config.php' );
@@ -48,7 +52,7 @@ Class Crud extends Conectar{
     const C_PLACE = 9;	//placeholder del input
     const C_CLASS = 10;  //agregar alguna clase extra, para validar puede ser util
 
-	function __construct( $tabla , $campos ){
+	function __construct( $tabla , $campos, $edit_id = 0 ){
 
 		parent::__construct();
         $this->u=array();
@@ -57,6 +61,8 @@ Class Crud extends Conectar{
         self::listar_campos_sql();
         $this->titulo = "Listado de tabla: " . $tabla; 
         $this->eliminar = false;
+        $this->edit_id = $edit_id;
+
 	}
 
 	public function setEliminar( $valor ){
@@ -77,15 +83,18 @@ Class Crud extends Conectar{
 	//imprime el script que escucha los formularios add y edit
     private function renderAjax(){
 
-        $form_datos = "";$form_campos ="";
+        $form_datos = ""; //utilizado para enviar los datos hacia ajax
+        $form_response =""; //utilizado para listar el js para cargar la espuesta json de ajax
         foreach ( $this->campos_array as $id => $row ) 
-			if( $row[self::C_LISTAR] AND $id > 0 ){  //mostrar en listado? / el id no se incluye
+			if( $row[self::C_LISTAR] AND $id >= 0 ){  //mostrar en listado? / el id no se incluye
 						$form_datos .= 'formData.append("'.$row[self::C_NOMBRE_CAMPO].'", $("#'.$row[self::C_NOMBRE_CAMPO].'").val() );
 										';		
-						$form_campos .=  $row[self::C_NOMBRE_CAMPO];	
+						//se carga cada asignacion de valor json a los campos del form
+						$form_response .=  '
+											$("#'.$row[self::C_NOMBRE_CAMPO].'").val(data[0].'.$row[self::C_NOMBRE_CAMPO].');';	
 				
 			}	
-
+		
         //fnAjaxRenderTabla::: envia todo por JSON, un array de dos objetos, uno contiene todas las propiedades
 	    //que se necesiten, el otro array envia el array de configuracion de campos del CRUD.
 		//$datos[0] : contiene nombre de tabla, crud-list y cualquier otra propiedad de control que quiera usar
@@ -99,84 +108,100 @@ Class Crud extends Conectar{
                         	$.getScript("js/validate/validar.js"); // add script
 
 
-                        	$("body").on( "click" , "#guardar_edit" , function(){
-                        		alert("edit");
-                        	});
-                        	//$("#guardar_edit").on( "click" , function(){		});
-
-							$("#btn_test").on( "click" , function(){								
-								alert("test funciona!!");
-							});
-
-                        	$("#guardar_add").on( "click" , function(){
+                        	$("body").on( "click" , "#guardar" , function(){
+                        		if( $("#form_crud").valid() == true ){
+                        			if( $("#modal_mode").val() == "add" ){									
+											fnAjaxAdd();
+                        			}else{
+											guardarEdit();
+                        					
+                        			}
+                        		}                        				  		
                         		
-                        		if( $("#form_add").valid() == true )
-                        				  		fnAjaxAdd();
-                        	});													                       	
+                        	});                  												                       	
 
-                        	$(".btn_del").on( "click" , function(){
+                        	$("body").on( "click" , ".btn_del" , function(){
                         		
                         		if( confirm("Queres eliminar el item: " + $(this).attr("idprod") + "?" ) )
                         						fnAjaxEliminarItem( $(this).attr("idprod") );       			
                         	});
 							
-                        	$("#btnEdit").on( "click" , function(){
-                        		
-								var formData = new FormData();	
-							
-								formData.append( "crud-edit" , 1 );
-								formData.append( "tabla_bd" , $("#tabla_bd").val() );						
-								'.$form_datos.'
+                        	
 
-
-                        		$.ajax({
-                        			url: "ajax-crud.php/?mode=crud-edit",  
-									type: "POST",										
-									data: formData,					
-									cache: false,
-									contentType: false,
-									processData: false,
-									//mientras enviamos el archivo
-									beforeSend: function(){
-										//$("#cargando").show();						
-									},
-									//una vez finalizado correctamente
-									success: function(data){													
-										//fnAjaxRenderTabla();
-										alert(data);
-									},
-									//si ha ocurrido un error
-									error: function(){
-										//$("#cargando").hide();						
-									} 
-                        		});
-                        	});
 							
-							$(".btn_edit").on("click" , function(){
-								
-								//fnResetForm();
-								fnAjaxCompletarFormulario($(this).attr("idprod"));
+							$("body").on( "click" , ".btn_edit" , function(){																
+								fnAjaxCompletarFormulario($(this).attr("idprod"));						
 																								
                         	});
 
                         	$("#btnAdd").on("click" , function(){
-								fnResetForm();
-								$("#panel_add").modal("show");
+								
+								MostrarPanel("add");					
 								
                         	});
 
 
                         });
 
-                        
+                        var guardarEdit = function(){
+
+                        	var formData = new FormData();	
+							
+							formData.append( "crud-edit" , 1 );							
+							formData.append( "tabla_bd" , $("#tabla_bd").val() );
+							formData.append( "campo_id" , "'.$this->campos_array[0][self::C_NOMBRE_CAMPO].'" ); //envio el nombre del campo_id para identificarlo
+							'.$form_datos.'
+														
+							$.ajax({
+								url: "ajax-crud.php/?mode=crud-edit",  
+								type: "POST",										
+								data: formData,					
+								cache: false,
+								contentType: false,
+								processData: false,
+								//mientras enviamos el archivo
+								beforeSend: function(){
+									//$("#cargando").show();						
+								},
+								//una vez finalizado correctamente
+								success: function(data){												
+
+									if(parseInt(data) === 1)
+										fnAjaxRenderTabla();
+									else
+										alert("Error al editar");
+									
+								},
+								//si ha ocurrido un error
+								error: function(){
+									//$("#cargando").hide();						
+								}
+							});
+
+                        };
+
+                        var MostrarPanel = function( mode ){
+                        	
+                        	if( mode =="add"){
+								fnResetForm();
+								$("#modal_mode").val("add");
+                        		$("#panel_titulo").text("Nuevo Item");
+                        	}	                        	
+                        	else{
+								$("#panel_titulo").text("Edicion de Item");
+								$("#modal_mode").val("edit");
+                        	}	                        	
+
+							$("#panel_crud").modal("show");
+                        };
 						
 						var fnResetForm = function(){
 							$(".validar").each(function(){								
 								$(this).removeClass("has-error has-success");
 								$(this).children(":input").val("");
 							});
-							$("#form_add").validate().resetForm();							
-						}
+							$("#form_crud").validate().resetForm();							
+						};
 	                        
 						var fnAjaxEliminarItem = function(idprod){
 							
@@ -205,7 +230,7 @@ Class Crud extends Conectar{
 								},
 								//si ha ocurrido un error
 								error: function(){
-									//$("#cargando").hide();						
+									alert("Error, no se pudo eliminar.");
 								}
 							});
 
@@ -232,8 +257,7 @@ Class Crud extends Conectar{
 							   data: { datos: jsonStr },
 							   type: "POST",
 							   success: function(response) {							      	
-							      	$("#panel_add").modal("hide");
-							      	$("#panel_edit").modal("hide");
+							      	$("#panel_crud").modal("hide");							      	
 							      	$("#div_tabla").html(response);
 							   }
 							});
@@ -274,9 +298,7 @@ Class Crud extends Conectar{
 
 							obj["crud-completar-formulario"] = "1";
 							obj["tabla_bd"] = "tbmoneda";
-							obj["idprod"] = id;
-							obj["setTitulo"] = "'.self::getTitulo().'";
-							obj["setEliminar"] = "'.self::getEliminar().'";
+							obj["idprod"] = id;							
 							
 							arreglo.push(obj);
 							arreglo.push( '.json_encode( $this->campos_array , JSON_FORCE_OBJECT ).' );
@@ -290,8 +312,12 @@ Class Crud extends Conectar{
 							   type: "POST",
 							   success: function(response) {							      	
 							      	
-							      	$("#div_edit").html(response);							      	
-							      	$("#panel_edit").modal("show");			   							      	
+							      	var data = JSON.parse(response);
+							      	if(data.length){										
+										'.$form_response.'
+										MostrarPanel("edit");
+							      	}
+							      								      	
 							   }
 							});
                         };
@@ -310,12 +336,20 @@ Class Crud extends Conectar{
 			return $this->titulo;
 	}
 
-	public function getEdit( $id ){
-	
-		$clsEdit = new Formulario( $this->tabla , $this->campos_array , $id );
-		$clsEdit->setTitulo("Editar Item (" . $id . ")");		
+	//esta funcion retorna el modal bootstrap con el form a utilizar en add y edit
+	public function getModal(){
+		$clsEdit = new Formulario( $this->tabla , $this->campos_array , 0 );		
 		
-		return $clsEdit->renderEdit( );
+		return $clsEdit->renderModal();	
+	}
+	
+
+	public function getValores(  ){
+	
+		$clsEdit = new Formulario( $this->tabla , $this->campos_array , $this->edit_id );
+		
+		
+		return $clsEdit->listar_valores( );
 
 	}
 
@@ -356,12 +390,9 @@ Class Crud extends Conectar{
 							'</div><!-- END DIV_TABLA -->' .							
 					'	</div>
 					</div><!-- END PANEL -->' .
-					'<div id="div_add"><!-- DIV_ADD -->' .
-						    	//self::getAdd() .
-				    '</div><!-- END DIV_ADD -->
-				    <div id="div_edit"><!-- DIV_EDIT -->'.
-				    			self::getEdit( 0 ) .
-					'</div><!-- END DIV_EDIT -->					
+					'<div id="div_modal"><!-- DIV_MODAL -->' .
+						    	self::getModal() .
+				    '</div><!-- END DIV_MODAL -->				    				
 				</div><!-- END TABLA_DIV -->' . self::renderAjax();	
 	}
 

@@ -10,7 +10,7 @@
 						array( 
 							array( "idMoneda" 	, tipoDato::T_INT , "ID" 		, 1 , 1 , 0, "number"	, 2, 50, "", ""  ),
 							array( "Nombre" 	, tipoDato::T_STR , "Nombre" 	, 1 , 1 , 1, "text"		, 2, 50, "ingresa un nombre", ""  ),
-				   		  	array( "Cambio" 	, tipoDato::T_INT , "Cambio" 	, 1 , 1 , 1, "number"	, 1, 50, "ingresa cambio", ""  )
+				   		  	array( "Cambio" 	, tipoDato::T_INT , "Cambio" 	, 1 , 1 , 1, "number"	, 1, 10, "ingresa cambio", ""  )
 				   		)
 					 ); //se pasan datos de tabla al constructor
 	

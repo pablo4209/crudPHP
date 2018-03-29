@@ -33,7 +33,7 @@ $(function(){
     
     
 
-    $("#form,#form_add,#form_edit").validate({                                
+    $("#form_crud").validate({                                
                 errorElement: "em",
                 errorPlacement: function ( error, element ) {
                         // Add the `help-block` class to the error element

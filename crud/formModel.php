@@ -19,8 +19,7 @@ class Formulario extends Conectar {
 	protected $titulo;
 	protected $html_post_titulo;
 	protected $html_dentro_form;	
-	protected $form_nombre_add ;
-    protected $form_nombre_edit ;
+	protected $form_nombre;    
 	protected $controles ;
     protected $panel_nombre;
     protected $campos_array;
@@ -44,14 +43,13 @@ class Formulario extends Conectar {
     {
         parent::__construct();
         $this->u=array();
-        $this->titulo = "formulario";        
-        $this->form_nombre_add = "form_add";
-        $this->form_nombre_edit = "form_edit";
+        $this->titulo = "Formulario CRUD";        
+        $this->form_nombre = "form_crud";        
         $this->controles = "";
         $this->html_pre_form = "";
         $this->html_dentro_form = "";
         $this->html_post_form = "";
-        $this->panel_nombre = "panel1";
+        $this->panel_nombre = "panel_crud";
         $this->campos_array = $campos;
         $this->tabla = $tabla;
         $this->edit_id = $edit_id;
@@ -60,9 +58,20 @@ class Formulario extends Conectar {
 
     }
     
+    public function listar_valores(){
+        if( $this->edit_id ){ //si es >0 hay que recuperar los calores para cada campo
+            $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0][self::C_NOMBRE_CAMPO] . "=?";
+
+            $con = new Conectar();
+            $dato = $con->getRowId( $sql , $this->edit_id );            
+            return json_encode( $dato );
+        }else 
+            return "";    
+        
+    }
     
 
-    // faltaria modificar que revise si se trata de una edicion para cargar el valor
+    // faltaria modificar que revise si se trata de una edicion para cargar el valor    
     private function listar_controles(){
 
         if( $this->edit_id ){ //si es >0 hay que recuperar los calores para cada campo
@@ -78,8 +87,9 @@ class Formulario extends Conectar {
         $cant = count( $this->campos_array );        
         $autofoco = '';
         foreach ( $this->campos_array as $id => $row ) 
-                    if( $id > 0 ){  //mostrar en listado?                        
+                    if( $id >= 0 ){  //mostrar en listado?                        
                         $type = $row[self::C_TYPE];
+                        $disabled = ( $row[self::C_EDITAR] && $id != 0 )? '' : ' disabled'; //nunca editar id
                         $cls_editable = ($row[self::C_TYPE] == "hidden")? '' : ' campo_editable ';
                         $requerido = ( $row[self::C_REQUERIDO] )? ' required':'' ;
                         $asterisco = ( $row[self::C_REQUERIDO] )? ' (*)' : '';
@@ -103,6 +113,7 @@ class Formulario extends Conectar {
                                                  .$requerido.'" '
                                                  .$place
                                                  . $valor
+                                                 . $disabled
                                                  .' >
                                             </div>';      //' .($row[self::C_REQUERIDO])? required':'' . '                   
                                   
@@ -132,12 +143,9 @@ class Formulario extends Conectar {
     public function setNombrePanel( $t ){ //tambien es el id
         $this->panel_nombre = $t; 
     }
-    public function setNombreFormAdd( $t ){
-    	$this->form_nombre_add = $t;
-    }
-    public function setNombreFormEdit( $t ){
-        $this->form_nombre_edit = $t;
-    }
+    public function setNombreForm( $t ){
+    	$this->form_nombre = $t;
+    }    
     public function setHtmlPreForm( $t ){
     	$this->html_pre_form = $t;
     }
@@ -149,44 +157,13 @@ class Formulario extends Conectar {
     }
 
 
-    public function renderEdit(){
-
-        //self::setHtmlDentroForm();
-    	
-    	return '<div class="modal fade" id="panel_edit" role="dialog" tabindex="-1"  aria-hidden="true"><!-- PANEL_EDIT -->
-                      <div class="modal-dialog modal-lg" role="document">
-                        <form action="" method="POST" name="'.$this->form_nombre_edit.'" id="'.$this->form_nombre_edit.'"> 
-                            <div class="modal-content">                             
-                                    <div class="modal-header"><!-- PANEL HEADER -->             
-                                        <h4 class="modal-title">'.$this->titulo.'</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>               
-                                        '.$this->html_pre_form.'
-                                    </div><!-- END PANEL HEADER -->             
-                                    <div class="modal-body"><!-- PANEL BODY -->                               
-                                        '.$this->controles
-                                         .$this->html_dentro_form
-                                        .'
-                                    </div><!-- END PANEL BODY -->
-                                    <div class="modal-footer"><!-- PANEL FOOTER -->
-                                        '.$this->html_post_form.'
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-success pull-right" name="guardar_edit" id="guardar_edit" title="Guardar cambios" >Guardar</button> 
-                                    </div><!-- END PANEL FOOTER -->                            
-                            </div><!-- modal-content -->
-                        </form>
-                      </div><!-- modal-dialog -->
-                </div><!-- END PANEL_EDIT -->';
-
-    }
-
-    public function renderAdd(){
-        
-        return '<div class="modal fade" id="panel_add" role="dialog" tabindex="-1"  aria-hidden="true"><!-- PANEL ADD -->
-                  <div class="modal-dialog modal-lg" role="document">
-                    <form action="" method="POST" name="'.$this->form_nombre_add.'" id="'.$this->form_nombre_add.'"> 
+    public function renderModal(){
+        return '<div class="modal fade" id="'.$this->panel_nombre.'" role="dialog" tabindex="-1"  aria-hidden="true"><!-- PANEL MODAL -->
+                  <div class="modal-dialog modal-lg" role="document"><!-- modal-dialog -->
+                    <form action="" method="POST" name="'.$this->form_nombre.'" id="'.$this->form_nombre.'"> 
                         <div class="modal-content">                             
                                 <div class="modal-header"><!-- PANEL HEADER -->             
-                                    <h4 class="modal-title">'.$this->titulo.'</h4>
+                                    <h4 class="modal-title" id="panel_titulo">'.$this->titulo.'</h4>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>               
                                     '.$this->html_pre_form.'
                                 </div><!-- END PANEL HEADER -->             
@@ -198,14 +175,15 @@ class Formulario extends Conectar {
                                 <div class="modal-footer"><!-- PANEL FOOTER -->
                                     '.$this->html_post_form.'
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <input type="button" class="btn btn-success pull-right" name="guardar_add" id="guardar_add" value="Guardar" title="Guardar cambios" />
+                                    <input type="hidden" id="modal_mode" name="modal_mode" value="add" />
+                                    <input type="button" class="btn btn-success pull-right" name="guardar" id="guardar" value="Guardar" title="Guardar cambios" />
                                 </div><!-- END PANEL FOOTER -->                            
                         </div><!-- modal-content -->
                     </form>
-                  </div><!-- modal-dialog -->
-                </div><!-- END PANEL ADD -->';
-
+                  </div><!-- END modal-dialog -->
+                </div><!-- END PANEL MODAL -->';
     }
+
 
 }
 
