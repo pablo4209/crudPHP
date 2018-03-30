@@ -1,8 +1,7 @@
-<?php 
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
-	require_once( 'crud/crudModel.php' );
-	
+<?php 	
+
+
+	require_once( 'crud/config.php' );		
 
 	
 	//Crud( nom_tabla, array(array( nom_campo, tipo_dato , alias , listar , editar , requerido, minlenght, maxlenght, placeholder , extraclass  )) )

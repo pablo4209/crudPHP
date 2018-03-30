@@ -5,12 +5,6 @@
  * @copyright 2013
  */
 
- //constantes de conexion
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'bd_entidad');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
-define('DB_CHAR', 'utf8');
 
 class Conectar
 {
@@ -192,25 +186,7 @@ class Conectar
 
     }
 
-	//***********************************************************
-	//recibe una cadena que incluye numeros y le incrementa una unidad
-	//ej: recibe AAA0000 >>>>> devuelve AAA0001
-	public static function sumarUno($cadena, $iniciales="3")
-	{
-		if($cadena =="") return "";
 
-		if($iniciales =="3")
-			$cantIniciales = 3;
-		else
-			$cantIniciales = strlen($iniciales);
-
-		$strLetra = substr( trim($cadena) , 0, $cantIniciales ); //3 es el numero de letras que tiene el codigo
-		$strNumero = substr( trim($cadena) , $cantIniciales, strlen($cadena) - $cantIniciales ); //y en numero el resto
-		$i = strlen($strNumero); //Cantidad de digitos
-		$strNumero = (int)$strNumero + 1; //sumamos 1
-		$strNumero = str_pad ((string)$strNumero, $i, "0",STR_PAD_LEFT); //rellenar hasta la longitud $i con ceros
-		return trim($strLetra . $strNumero);
-	}
 
     //*******************************************************************************************************************************************************
     //
@@ -226,106 +202,7 @@ class Conectar
  }
 
 
-//funci�n para la fecha
-public static function fecha(){
-	$dia=date("w");
-	$day=date("d");
-	$mes=date("m");
-switch ($dia) {
-	case 0:
-   	$dia ="Domingo";
-	break;
 
-  case 1:
-  $dia = "Lunes";
-	break;
-	case 2:
-  $dia ="Martes";
-
-          break;
-
-  case 3:
-  $dia ="Mi�rcoles";
-
-          break;
-  case 4:
-  	$dia ="Jueves";
-    break;
-  case 5:
-  $dia ="Viernes";
-	break;
-  case 6:
-  $dia ="S�bado";
-	break;
-
-}
-switch ($mes){
-	case '01':
-	$mes="Enero";
-	break;
-	case '02':
-	$mes="Febrero";
-	break;
-	case '03':
-	$mes="Marzo";
-	break;
-	case '04':
-	$mes="Abril";
-	break;
-	case '05':
-	$mes="Mayo";
-	break;
-	case '06':
-	$mes="Junio";
-	break;
-	case '07':
-	$mes="Julio";
-	break;
-	case '08':
-	$mes="Agosto";
-	break;
-	case '09':
-	$mes="Septiembre";
-	break;
-	case '10':
-	$mes="Octubre";
-	break;
-	case '11':
-	$mes="Noviembre";
-	break;
-	case '12':
-	$mes="Diciembre";
-	break;
-}
-$fecha="$dia ".$day." de ".$mes." de ".date("Y");
-return $fecha;
-}
-	public static function valida_correo($email){
-    $mail_correcto = 0;
-    //compruebo unas cosas primeras
-    if ((strlen($email) >= 6) && (substr_count($email,"@") == 1) && (substr($email,0,1) != "@") && (substr($email,strlen($email)-1,1) != "@")){
-       if ((!strstr($email,"'")) && (!strstr($email,"\"")) && (!strstr($email,"\\")) && (!strstr($email,"\$")) && (!strstr($email," "))) {
-          //miro si tiene caracter .
-          if (substr_count($email,".")>= 1){
-             //obtengo la terminacion del dominio
-             $term_dom = substr(strrchr ($email, '.'),1);
-             //compruebo que la terminaci?n del dominio sea correcta
-             if (strlen($term_dom)>1 && strlen($term_dom)<5 && (!strstr($term_dom,"@")) ){
-                //compruebo que lo de antes del dominio sea correcto
-                $antes_dom = substr($email,0,strlen($email) - strlen($term_dom) - 1);
-                $caracter_ult = substr($antes_dom,strlen($antes_dom)-1,1);
-                if ($caracter_ult != "@" && $caracter_ult != "."){
-                   $mail_correcto = 1;
-                }
-             }
-          }
-       }
-    }
-    if ($mail_correcto)
-       return true;
-    else
-       return false;
-}
     public static function crear_selects_fecha($dia="",$mes="",$anio="")
     {
         $f="";
@@ -410,16 +287,6 @@ return $fecha;
         }
     }
 
-    public static function SelectuserLevel($opcion=1)
-    {
-        $sel = '<select name="NivelAcceso" id="NivelAcceso" class="select input">';
-        $sel.= '<option value="1" '.(($opcion ==1)? 'selected="selected"':'').'>Vendedor</option>' ;
-        $sel.= '<option value="2" '.(($opcion ==2)? 'selected="selected"':'').'>Administrador</option>' ;
-        $sel.= '<option value="3" '.(($opcion ==3)? 'selected="selected"':'').'>Root</option>' ;
-        $sel.= '</select>';
-
-        return $sel;
-    }
 
 }
 

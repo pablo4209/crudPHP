@@ -14,9 +14,27 @@ abstract class tipoDato {
 define( 'DEBUG' , 1 );
 
 //directorios usados
-define ( "MODEL" , "model/" );
-define ( "AJAX" , "application/ajax/" );
+define( "ROOT" , "/var/www/html/claseCrud/" );
+define ( "MODEL" , ROOT . "model/" );
+define ( "AJAX" ,  ROOT . "application/ajax/" );
+
+ 
+ //constantes de conexion
+define('DB_HOST', '127.0.0.1');
+define('DB_NAME', 'bd_entidad');
+define('DB_USER', 'root');
+define('DB_PASS', 'root');
+define('DB_CHAR', 'utf8');
+
+require_once( MODEL . 'database.php' );
+require_once( ROOT . 'crud/formModel.php' );
+require_once( ROOT . 'crud/crudModel.php' );
 
 
+
+if(DEBUG){
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+}
 
  ?>

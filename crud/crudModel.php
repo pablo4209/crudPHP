@@ -27,10 +27,6 @@
 
 */
 
-require_once( 'config.php' );
-require_once( MODEL . 'database.php' );
-require_once( 'formModel.php' );
-
 
 Class Crud extends Conectar{
 	private $campos_array; 		//array de arrays con toda la configuracion de los campos

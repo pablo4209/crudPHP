@@ -1,15 +1,7 @@
 <?php 
 
-
-
-
 require_once( 'crud/config.php');
-require_once( MODEL . 'database.php' );
 
-if(DEBUG){
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');	
-}
 
 if($_GET){
 
