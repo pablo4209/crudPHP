@@ -1,5 +1,10 @@
 <?php
-//esto se carga en root junto a ajax-crud.php
+/*
+*		-recibe un array que incluye  tabla_bd y campo_id como campos principales
+*		el resto son nombres de campo>>valor para armar la consulta mysql y editar el registro
+*
+*		- el campo crud-edit es de verificacion
+*/
 
 if( isset($_POST["crud-edit"]) AND $_POST["crud-edit"] == 1 ){
 
@@ -30,26 +35,6 @@ if( isset($_POST["crud-edit"]) AND $_POST["crud-edit"] == 1 ){
 
 	echo $prepared->execute();
 
-}
-
-if( isset($_POST['datos'])  ){
-
-	$datos = json_decode( $_POST["datos"] , true ) ; //con true devuelve array asociativo
-
-	if( $datos[0]["crud-completar-formulario"] == 1 ){
-
-			require_once( 'crud/crudModel.php' );
-
-			$crud = new Crud ( $datos[0]["tabla_bd"] ,
-							   $datos[1] ,
-							   $datos[0]["idprod"]
-						 ); //se pasan datos de tabla al constructor
-
-			//header('Content-Type: application/json');
-
-			//echo $crud->getEdit( $datos[0]["idprod"] );
-			echo $crud->getValores();
-	}
 }
 
 

@@ -1,0 +1,88 @@
+[2018-09-15 17:39:22.000000 127.0.0.1 Valores CRUD_DEBUG:  - SELECT  idMoneda, Nombre, Cambio FROM tbmoneda ] 
+[2018-09-15 17:39:22.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:39:24.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='4'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:39:24.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:39:24.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='4'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:40:07.000000 127.0.0.1 Valores CRUD_DEBUG:  - SELECT  idMoneda, Nombre, Cambio FROM tbmoneda ] 
+[2018-09-15 17:40:07.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:40:09.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='4'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:40:09.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:40:09.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='4'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:42:18.000000 127.0.0.1 Valores CRUD_DEBUG:  - SELECT  idMoneda, Nombre, Cambio FROM tbmoneda ] 
+[2018-09-15 17:42:18.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:42:19.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='4'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:42:19.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:42:19.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='4'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:47:32.000000 127.0.0.1 Valores CRUD_DEBUG:  - SELECT  idMoneda, Nombre, Cambio FROM tbmoneda ] 
+[2018-09-15 17:47:32.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:57:16.000000 127.0.0.1 Valores CRUD_DEBUG:  - SELECT  idMoneda, Nombre, Cambio FROM tbmoneda ] 
+[2018-09-15 17:57:16.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:57:18.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='2'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 17:57:18.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 
+[2018-09-15 17:57:18.000000 127.0.0.1 Valores CRUD_DEBUG:  - SQL: [39] SELECT * FROM tbmoneda WHERE idMoneda=?
+Sent SQL: [41] SELECT * FROM tbmoneda WHERE idMoneda='2'
+Params:  1
+Key: Position #0:
+paramno=0
+name=[0] &quot;&quot;
+is_param=1
+param_type=2
+ ] 
+[2018-09-15 18:02:49.000000 127.0.0.1 Valores CRUD_DEBUG:  - SELECT  idMoneda, Nombre, Cambio FROM tbmoneda ] 
+[2018-09-15 18:02:49.000000 127.0.0.1 Valores CRUD_DEBUG:  - Select * From tbentidad  ] 

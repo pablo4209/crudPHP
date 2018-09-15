@@ -14,23 +14,28 @@ class Conectar
     function __construct()
     {       try
             {
-                $this->dbh=new PDO('mysql:host=' . DB_HOST .
-                                   ';dbname=' . DB_NAME,
-                                   DB_USER,
-                                   DB_PASS,
-                                   array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . DB_CHAR)
-								   );
-                
+                $this->dbh=new PDO('mysql:host=' . C_DB_HOST .
+                                   ';dbname=' . C_DB_NAME,
+                                   C_DB_USER,
+                                   C_DB_PASS,
+                                   array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . C_DB_CHAR )
+								                  );
+                if( CRUD_DEBUG ){
+                    $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                }else
+                    $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
+
             }
             catch (PDOException $e) {
-                print '<div class="alert alert-danger" role="alert">Mensaje:  '. $e->getMessage() . '</div>';                
-                die();
+                write_log( "Error estableciendo conexion: " , $e->getMessage() );
+                print '<div class="alert alert-danger" role="alert">Mensaje:  '. $e->getMessage() . '</div>';
+                //die();
             }
 
             $this->p=array();
     }
-
-
 
     protected function ClearArray()
     {
@@ -49,46 +54,53 @@ class Conectar
     }
 
     //La funcion devuelve un Array de dos dimensiones, como fetch_assocc, recibe como parametro la consulta select lista para ejecutarse
-    public function getRows($sql)
+    protected function getRows($sql)
     {
-        try{
-            self::ClearArray();
-            foreach($this->dbh->query($sql) as $row) //query retorna una fila asociada con los nombres de los campos
-            {                                         //retorna false y hay error
-                $this->p[]=$row;
-            }        
-            
-            self::debugSQL( $sql );
-            return $this->p;
+      try{
+          self::ClearArray();
+          foreach($this->dbh->query($sql) as $row) //query retorna una fila asociada con los nombres de los campos
+          {                                         //retorna false y hay error
+              $this->p[]=$row;
+          }
+
+          self::debugSQL( $sql );
+          return $this->p;
 
         }catch(PDOException $e) {
-                print '<div style="padding-top:50px;">Error!<br/>Mensaje:  '. $e->getMessage() . "<br/></div>";         
-                die();
+                write_log( "database::getRows() :" , $e->getMessage() );
+                return null;
+                //die();
         }
     }
 
-    protected function debugSQL( $sql ){
-        if( DEBUG ){
-            $_SESSION['infoSQL'] = '<div class="row"><div class="col-md-10"><div class="alert alert-danger" role="alert">'.htmlspecialchars( $sql ).'</div></div></div>';             
-        }else if( isset( $_SESSION['infoSQL'] ) ) 
-                    unset( $_SESSION['infoSQL'] ); 
+    protected function debugSQL( $param ){
+        $info="";
+        $sql="";
+        if( CRUD_DEBUG ){
+            if( is_string($param) ){
+                $sql = htmlspecialchars( $param );
+                $info = '<div class="row"><div class="col-md-10"><div class="alert alert-danger" role="alert">'.$sql.'</div></div></div>';
+            }elseif( is_a( $param, 'PDOStatement' ) ){
+
+              ob_start();   //debugDumpParams no retorna nada, sino q visualiza, esta parte captura la visualizacion a un string
+              $param->debugDumpParams();
+              $r = ob_get_contents();
+              ob_end_clean();
+
+              $sql = htmlspecialchars( $r );
+              $info = '<div class="row"><div class="col-md-10"><div class="alert alert-danger" role="alert">'.$sql.'</div></div></div>';
+            }
+            if($sql != "") write_log( "Valores CRUD_DEBUG: " , $sql );
+
+            if( !empty($_POST) )
+                    $info .= '<div class="row"><div class="col-md-10"><div class="alert alert-warning" role="alert">'.var_export( $_POST , true ).'</div></div></div>';
+
+            $_SESSION['infoSQL'] = $info; //se guarda en variable de sesion
+
+        }else if( isset( $_SESSION['infoSQL'] ) )
+                    unset( $_SESSION['infoSQL'] );
     }
 
-    protected function debugParams( $prep ){
-        
-        if(DEBUG){
-            
-            ob_start();
-            $prep->debugDumpParams();
-            $r = ob_get_contents();
-            ob_end_clean();           
-
-            $_SESSION['infoSQL'] = '<div class="row"><div class="col-md-10"><div class="alert alert-danger" role="alert">'.htmlspecialchars( $r ).'</div></div></div>'; 
-
-        }else if( isset( $_SESSION['infoSQL'] ) ) 
-                    unset( $_SESSION['infoSQL'] ); 
-
-    }
 
     public function close(){
       $this->dbh = null;
@@ -109,12 +121,11 @@ class Conectar
                 $stmt->closeCursor();
                 return $this->p;
             }else
-            {                
+            {
                 return false;
             }
 
     }
-
 
 
     //devuelve un array de dos dimensiones con una sola fila,
@@ -123,10 +134,17 @@ class Conectar
     public function getRowId($sql, $id)
     {
         try{
+
             self::ClearArray();
             $stmt=$this->dbh->prepare($sql);
-            $stmt->execute( array( $id ) );
-            self::debugParams( $stmt );
+
+            if( is_array($id) ){
+                $stmt->execute( $id );
+            }else {
+                $stmt->execute( array($id) );
+            }
+
+            self::debugSQL( $stmt );
 
             while($row = $stmt->fetch(PDO::FETCH_ASSOC))
             {
@@ -136,10 +154,13 @@ class Conectar
             return $this->p;
 
         }catch(PDOException $e) {
-                print '<div style="padding-top:50px;">Error!<br/>Mensaje:  '. $e->getMessage() . "<br/></div>";         
-                die();
+                write_log( "database::getRowId: " , $e->getMessage() );
+                return null;
+                //die();
         }
     }
+
+
 
     /*
     *   ejecutar consulta preparada y retorna true o false
@@ -147,15 +168,15 @@ class Conectar
     protected function exePrepare($consulta){
         try{
             $r = $consulta->execute();
-            self::debugSQL( $consulta );
+            self::debugSQL( $consulta ); //esto es un prepare
             $consulta->closeCursor();
             if($r)
                 return true;
             else
                 return false;
         }catch(PDOException $e) {
-                print '<div style="padding-top:100px;">Error!<br/>Mensaje:  '. $e->getMessage() . "<br/></div>";         
-                die();
+                write_log( "Error en exePrepare: " , $e->getMessage() );
+                return false;
         }
     }
 
@@ -168,25 +189,43 @@ class Conectar
           self::ClearArray();
           if( $consulta->execute() )
             {
-                self::debugParams( $consulta );
+                self::debugSQL( $consulta );
                 while($row = $consulta->fetch(PDO::FETCH_ASSOC)) //resultado asociado solo a nombres de campos
                 {
                     $this->p[]=$row;
                 }
-                $consulta->closeCursor();              
+                $consulta->closeCursor();
                 return $this->p;
             }else
             {
                 return false;
             }
         }catch(PDOException $e) {
-                print '<div style="padding-top:50px;">Error!<br/>Mensaje:  '. $e->getMessage() . "<br/></div>";         
-                die();
+                write_log( "Error en exePrepare_FetchAssoc: " , $e->getMessage() );
+                return false;
         }
 
     }
 
+	//***********************************************************
+	//recibe una cadena que incluye numeros y le incrementa una unidad
+	//ej: recibe AAA0000 >>>>> devuelve AAA0001
+	public static function sumarUno($cadena, $iniciales="3")
+	{
+		if($cadena =="") return "";
 
+		if($iniciales =="3")
+			$cantIniciales = 3;
+		else
+			$cantIniciales = strlen($iniciales);
+
+		$strLetra = substr( trim($cadena) , 0, $cantIniciales ); //3 es el numero de letras que tiene el codigo
+		$strNumero = substr( trim($cadena) , $cantIniciales, strlen($cadena) - $cantIniciales ); //y en numero el resto
+		$i = strlen($strNumero); //Cantidad de digitos
+		$strNumero = (int)$strNumero + 1; //sumamos 1
+		$strNumero = str_pad ((string)$strNumero, $i, "0",STR_PAD_LEFT); //rellenar hasta la longitud $i con ceros
+		return trim($strLetra . $strNumero);
+	}
 
     //*******************************************************************************************************************************************************
     //
@@ -202,7 +241,106 @@ class Conectar
  }
 
 
+//funci�n para la fecha
+public static function fecha(){
+  	$dia=date("w");
+  	$day=date("d");
+  	$mes=date("m");
+    switch ($dia) {
+    	case 0:
+       	$dia ="Domingo";
+    	break;
 
+      case 1:
+      $dia = "Lunes";
+    	break;
+    	case 2:
+      $dia ="Martes";
+
+              break;
+
+      case 3:
+      $dia ="Mi�rcoles";
+
+              break;
+      case 4:
+      	$dia ="Jueves";
+        break;
+      case 5:
+      $dia ="Viernes";
+    	break;
+      case 6:
+      $dia ="S�bado";
+    	break;
+
+    }
+    switch ($mes){
+    	case '01':
+    	$mes="Enero";
+    	break;
+    	case '02':
+    	$mes="Febrero";
+    	break;
+    	case '03':
+    	$mes="Marzo";
+    	break;
+    	case '04':
+    	$mes="Abril";
+    	break;
+    	case '05':
+    	$mes="Mayo";
+    	break;
+    	case '06':
+    	$mes="Junio";
+    	break;
+    	case '07':
+    	$mes="Julio";
+    	break;
+    	case '08':
+    	$mes="Agosto";
+    	break;
+    	case '09':
+    	$mes="Septiembre";
+    	break;
+    	case '10':
+    	$mes="Octubre";
+    	break;
+    	case '11':
+    	$mes="Noviembre";
+    	break;
+    	case '12':
+    	$mes="Diciembre";
+    	break;
+    }
+    $fecha="$dia ".$day." de ".$mes." de ".date("Y");
+    return $fecha;
+}
+	public static function valida_correo($email){
+    $mail_correcto = 0;
+    //compruebo unas cosas primeras
+    if ((strlen($email) >= 6) && (substr_count($email,"@") == 1) && (substr($email,0,1) != "@") && (substr($email,strlen($email)-1,1) != "@")){
+       if ((!strstr($email,"'")) && (!strstr($email,"\"")) && (!strstr($email,"\\")) && (!strstr($email,"\$")) && (!strstr($email," "))) {
+          //miro si tiene caracter .
+          if (substr_count($email,".")>= 1){
+             //obtengo la terminacion del dominio
+             $term_dom = substr(strrchr ($email, '.'),1);
+             //compruebo que la terminaci?n del dominio sea correcta
+             if (strlen($term_dom)>1 && strlen($term_dom)<5 && (!strstr($term_dom,"@")) ){
+                //compruebo que lo de antes del dominio sea correcto
+                $antes_dom = substr($email,0,strlen($email) - strlen($term_dom) - 1);
+                $caracter_ult = substr($antes_dom,strlen($antes_dom)-1,1);
+                if ($caracter_ult != "@" && $caracter_ult != "."){
+                   $mail_correcto = 1;
+                }
+             }
+          }
+       }
+    }
+    if ($mail_correcto)
+       return true;
+    else
+       return false;
+}
     public static function crear_selects_fecha($dia="",$mes="",$anio="")
     {
         $f="";
@@ -251,7 +389,15 @@ class Conectar
     }
 
     //Genera un select html con nombre e id, si $sel tiene valor lo selecciona, sino imprime seleccionar opcion con val=0
-     protected function crearSelectTabla($tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass="form-control input-medium required")
+    /*  id: el select toma el name e id con este valor, el valor del campo id es el value del select
+        desc: el campo descripcion de la Tabla
+        sel: id seleccionado por defecto
+        desc2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
+        where: filtro de la $consulta
+        cssClass: tiene las clases de control bootstrap por defecto y lo tilda como requerido para validate, cambiar el valor reemplaza el default
+
+    */
+    protected function crearSelectTabla($tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
     {
         $f=""; //se inicializan para evitar warnings
 		if(empty($tabla) or empty($id) or empty($desc))
@@ -259,14 +405,14 @@ class Conectar
             return "Error al generar Select de Tabla ".$tabla ;
         }
 
-        $sql = "Select * From ".$tabla.$where;
+        $sql = "Select * From ".$tabla." ".$where;
 
-		$datos = self::getRows($sql);
+		    $datos = self::getRows($sql);
 
         if($datos)
         {
             //dias
-            $f.= '<select name="'.$id.'" id="'.$id.'" min="1" title="Debes seleccionar un elemento." class="'.$cssClass.'">
+            $f.= '<select name="'.$id.'" id="'.$id.'" min="1" title="'.$toolTip.'" class="form-control '.$cssClass.'">
                     <option value="0" ';
             if ($sel=="") $f.='selected="selected"';
             $f.= '>Seleccionar</option>';
