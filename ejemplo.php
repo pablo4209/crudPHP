@@ -13,8 +13,8 @@
 				   		array( "Cambio" 		, tipoDato::T_INT 	 , "Cambio" 		, 1 , 1 , 1, "1"						,  "number"	, 1, 10	, "ingresa cambio", ""  ),
 							array( "idEntidad"  , tipoDato::T_SELECT , "Usuario"    , 0 , 1 , 1, $selectEntidad ,  "number"	, 1, 1	, "", ""  ),
 							array( "Habilitada" , tipoDato::T_CHECK  , "Habilitada" , 0 , 1 , 1, "1"						,  "number"	, 1, 1	, "", ""  )
-
-						)
+						),
+						"idMoneda = 1"
 					 ); //se pasan datos de tabla al constructor
 
 

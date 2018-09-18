@@ -23,7 +23,8 @@
 													placeholder ,
 													extraclass
 										)
-					)
+					),
+			   "idtabla = 2"			//tambien se pueden aplicar un filtro simple a los resultados de la tabla
 				);
 
 value cuando tipo_dato = tipoDato::T_SELECT
@@ -40,17 +41,19 @@ Class Crud extends Conectar {
 	private $campos_array; 		//array de arrays con toda la configuracion de los campos
 	private $campos_sql;   		// listado de texto de campos para armar la consulta sql
 	private $tabla;						//nombre de la tabla para sql
+	private $where;						//para filtrar resultados de la tabla a editar
 	private $u;								//variable acumulador para guardar result consulta
 	private $titulo;					//titulo de la pagina
 	private $eliminar;				//si se muestra opcion eliminar o no en la tabla, boolean. por def:false
 
 
-	function __construct( $tabla , $campos , $edit_id = 0 ){
+	function __construct( $tabla , $campos , $where = "" , $edit_id = 0 ){
 
 				parent::__construct();
         $this->u=array();
         $this->campos_array = $campos;
         $this->tabla = $tabla;
+				$this->where = $where;
         self::listar_campos_sql();
         $this->titulo = "Listado de tabla: " . $tabla;
         $this->eliminar = false;
@@ -262,7 +265,8 @@ Class Crud extends Conectar {
 									var arreglo = [];
 
 									obj["crud-list"] = "1";
-									obj["tabla_bd"] = "tbmoneda";
+									obj["tabla_bd"] = "'.$this->tabla.'";
+									obj["tabla_where"] = "'.$this->where.'";
 									obj["setTitulo"] = "'.self::getTitulo().'";
 									obj["setEliminar"] = "'.self::getEliminar().'";
 
@@ -270,7 +274,6 @@ Class Crud extends Conectar {
 									arreglo.push( '.json_encode( $this->campos_array , JSON_FORCE_OBJECT ).' );
 
 									jsonStr = JSON.stringify(arreglo);
-
 
 									$.ajax({
 									   url: "ajax-crud.php/?mode=crud-list",
@@ -318,12 +321,11 @@ Class Crud extends Conectar {
 							var arreglo = [];
 
 							obj["crud-completar-formulario"] = "1";
-							obj["tabla_bd"] = "tbmoneda";
+							obj["tabla_bd"] = "'.$this->tabla.'";
 							obj["idprod"] = id;
 
 							arreglo.push(obj);
 							arreglo.push( '.json_encode( $this->campos_array , JSON_FORCE_OBJECT ).' );
-
 
 							jsonStr = JSON.stringify(arreglo);
 
@@ -333,7 +335,7 @@ Class Crud extends Conectar {
 							   type: "POST",
 								 cache: false,
 							   success: function(response) {
-									 		//console.log(response);
+									 		console.log(response);
 							      	var data = JSON.parse(response);
 							      	if(data.length){
 													'.$form_response.'
@@ -367,7 +369,7 @@ Class Crud extends Conectar {
 
 	public function getValores(  ){
 
-		$clsEdit = new Formulario( $this->tabla , $this->campos_array , $this->edit_id );
+		$clsEdit = new Formulario( $this->tabla , $this->campos_array , $this->where , $this->edit_id );
 
 		return $clsEdit->listar_valores( );
 
@@ -420,6 +422,8 @@ Class Crud extends Conectar {
 	public function getTabla(){
 
 		$sql = "SELECT " . $this->campos_sql . " FROM " . $this->tabla;
+
+		if( $this->where != "" ) $sql .= " WHERE " . $this->where;
 
 		$this->u = parent::getRows( $sql );
 

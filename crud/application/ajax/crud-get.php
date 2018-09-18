@@ -7,6 +7,7 @@
 *		-
 */
 
+
 if( isset($_POST['datos'])  ){
 
 	$datos = json_decode( $_POST["datos"] , true ) ; //con true devuelve array asociativo
@@ -17,6 +18,7 @@ if( isset($_POST['datos'])  ){
 
 			$crud = new Crud ( $datos[0]["tabla_bd"] ,
 							   $datos[1] ,
+								 "" ,								
 							   $datos[0]["idprod"]
 						 ); //se pasan datos de tabla al constructor
 

@@ -18,7 +18,8 @@ if( isset( $_POST["datos"] )  ){
 		require_once( 'crud/crudModel.php' );
 
 		$crud = new Crud ( $datos[0]["tabla_bd"] ,
-						   $datos[1]
+						   				 $datos[1],
+											 $datos[0]["tabla_where"] 
 					 ); //se pasan datos de tabla al constructor
 
 		//configuraciones de la clase

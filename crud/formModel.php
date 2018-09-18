@@ -25,10 +25,11 @@ class Formulario extends Conectar {
   protected $campos_array;
   protected $campos_sql;
   protected $tabla;
+	protected $where;
   protected $edit_id;  //se carga en contruct con el id del registro a recuperar, por defecto = 0, cuando no se va a recuperar ningun registro
 
 
-	public function __construct( $tabla , $campos , $edit_id = 0 )
+	public function __construct( $tabla , $campos , $where = "" , $edit_id = 0 )
     {
         parent::__construct();
         $this->u=array();
@@ -41,6 +42,7 @@ class Formulario extends Conectar {
         $this->panel_nombre = "panel_crud";
         $this->campos_array = $campos;
         $this->tabla = $tabla;
+				$this->where = $where;
         $this->edit_id = $edit_id;
         self::listar_campos_sql();
         self::listar_controles();
