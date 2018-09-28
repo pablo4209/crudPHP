@@ -103,6 +103,10 @@ Class Crud extends Conectar {
 														';
 
 												break;
+										case tipoDato::T_SELECT:
+											$form_response .= '
+																				$( "#'.$row[crudArg::C_NOMBRE_CAMPO].' option:selected" ).val();';
+											break;
 										default:
 												// code...
 												break;
@@ -291,6 +295,7 @@ Class Crud extends Conectar {
 
 											formData.append( "crud-add" , 1 );
 											formData.append( "tabla_bd" , $("#tabla_bd").val() );
+											formData.append( "campo_id" , "'.$this->campos_array[0][crudArg::C_NOMBRE_CAMPO].'" ); //envio el nombre del campo_id para identificarlo
 											'.$form_datos.'
 
 											$.ajax({
@@ -383,12 +388,15 @@ Class Crud extends Conectar {
 		return $clsEdit->renderAdd();
 	}
 
+
+
 	private function listar_campos_sql(){
 
 		$cant = count($this->campos_array);
 		$listados =0 ;
 		for( $i=0 ; $i<$cant ; $i++ )
-			if( $this->campos_array[$i][crudArg::C_LISTAR] ){
+			if( $this->campos_array[$i][crudArg::C_LISTAR] &&
+					$this->campos_array[$i][crudArg::C_TIPO_CAMPO] != tipoDato::T_SELECT ){
 				$separador = ( $listados )? ", " : " ";
 				$this->campos_sql .= $separador . $this->campos_array[$i][crudArg::C_NOMBRE_CAMPO] ;
 				$listados++;

@@ -7,7 +7,7 @@
 */
 if( isset($_POST["crud-add"]) AND $_POST["crud-add"] == 1 ){
 
-
+	if(CRUD_DEBUG) write_log( "CRUD-ADD::POST: " , var_export( $_POST, true ) );
 	$listados = 0;
 	$sql = "INSERT INTO " . $_POST["tabla_bd"] . " ( ";
 	$valores = '';
@@ -21,7 +21,7 @@ if( isset($_POST["crud-add"]) AND $_POST["crud-add"] == 1 ){
 		}
 
 	$sql .= ' ) VALUES ( '.$valores.' )';
-
+	if(CRUD_DEBUG)write_log("CRUD-ADD::sql: " , $sql );
 
 	$cls = new Conectar();
 	$con = $cls->getConn();
@@ -30,7 +30,11 @@ if( isset($_POST["crud-add"]) AND $_POST["crud-add"] == 1 ){
 
 	foreach ($_POST as $key => &$value) //bindParam necesita puntero
 		if( $key != 'crud-add' AND $key != 'tabla_bd' AND $key != $_POST["campo_id"] AND $key != "campo_id" )
-			$prepared->bindParam( ':'.$key , $value );
+		{
+				$prepared->bindParam( ':'.$key , $value );
+				if(CRUD_DEBUG)write_log("CRUD-ADD::valor: " , $key.' : '.$value );
+		}
+
 
 	$res = $prepared->execute();
 
