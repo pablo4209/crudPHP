@@ -340,12 +340,8 @@ Class Crud extends Conectar {
 							   type: "POST",
 								 cache: false,
 							   success: function(response) {
-									 		console.log(response);
-							      	var data = JSON.parse(response);
-							      	if(data.length){
-													'.$form_response.'
+													$("#div_modal").html(response);
 													MostrarPanel("edit");
-							      	}
 							   }
 							});
                         };
@@ -366,7 +362,7 @@ Class Crud extends Conectar {
 
 	//esta funcion retorna el modal bootstrap con el form a utilizar en add y edit
 	public function getModal(){
-		$clsEdit = new Formulario( $this->tabla , $this->campos_array , 0 );
+		$clsEdit = new Formulario( $this->tabla , $this->campos_array , $this->where , $this->edit_id );
 
 		return $clsEdit->renderModal();
 	}

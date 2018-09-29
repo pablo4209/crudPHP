@@ -18,12 +18,11 @@ if( isset($_POST['datos'])  ){
 
 			$crud = new Crud ( $datos[0]["tabla_bd"] ,
 							   $datos[1] ,
-								 "" ,								
+								 "" ,
 							   $datos[0]["idprod"]
 						 ); //se pasan datos de tabla al constructor
-
-			echo $crud->getValores(); // retorna un json con los campos para completar el formulario
-
+			
+			echo $crud->getModal();
 	}
 }
 

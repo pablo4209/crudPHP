@@ -62,21 +62,24 @@ class Formulario extends Conectar {
     }
 
 
-    // FALTA REVISAR SI SE TRATA DE UNA EDICION LA CARGA DEL VALUE,
-		// ya que solo dibuja los controles, la carga de datos se realiza con fnAjaxCompletarFormulario
+    /* FALTA REVISAR SI SE TRATA DE UNA EDICION LA CARGA DEL VALUE,
+		* ya que solo dibuja los controles, la carga de datos se realiza con fnAjaxCompletarFormulario
+		*  *** SE TERMINA LA CARGA DE VALORES POR AJAX, FALLA LA ACTUALIZACION DE CONTROLES, SE REDIBUJAN DIRECTAMENTE
+		*/
     private function listar_controles(){
 
-        if( $this->edit_id ){ //si es >0 hay que recuperar los valores para cada campo
+        if( $this->edit_id > 0 ){ //si es >0 hay que recuperar los valores para cada campo
             $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0][crudArg::C_NOMBRE_CAMPO] . "=?";
             $con = new Conectar();
             $dato = $con->getRowId( $sql , $this->edit_id );
+						//if(CRUD_DEBUG) write_log("listar_controles::getRowId: ", var_export($dato, true) );
 				}
 
         $this->controles = '<input id="tabla_bd" name="tabla_bd" type="hidden" class="form-control" value="'.$this->tabla.'" >';
         $cant = count( $this->campos_array );
         $autofoco = '';
         foreach ( $this->campos_array as $id => $row )
-                    if( $id >= 0 ){  //mostrar en listado?
+            	if( $id >= 0 ){  //mostrar en listado?
                         $type = $row[crudArg::C_TYPE];
                         $disabled = ( $row[crudArg::C_EDITAR] && $id != 0 )? '' : ' disabled'; //nunca editar id
                         $cls_editable = '';
@@ -90,7 +93,9 @@ class Formulario extends Conectar {
                         $maxlength = ( $row[crudArg::C_MAX] !='' )? ' maxlength="'.$row[crudArg::C_MAX].'"' : '';
                         $extraclass = ( $row[crudArg::C_CLASS] !='' )? ' '.$row[crudArg::C_CLASS] : '';
                         $place = ( $row[crudArg::C_PLACE] != '' )? 'placeholder="'.$row[crudArg::C_PLACE].'"' : '';
-                        $valor = ( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) )? ' value="' . $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] . '" ' : ' value="nunca entar" ';
+												if( !is_array($row[crudArg::C_VALUE]) )
+													$valorDefault = ' valDefault = "' . $row[crudArg::C_VALUE] . '" ';
+												$valor = ' value="' . ( (isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]))? $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] : $this->campos_array[0][crudArg::C_VALUE] ) . '" ';
 
 												//en esta parte hay que determinar que tipo de control renderizar
 												switch ($row[crudArg::C_TIPO_CAMPO]) {
@@ -109,6 +114,7 @@ class Formulario extends Conectar {
 				                                                 .$requerido.'" '
 				                                                 .$place
 				                                                 . $valor
+																												 . $valorDefault
 				                                                 . $disabled
 				                                                 .' >
 				                                            </div>';      //' .($row[crudArg::C_REQUERIDO])? required':'' . '
@@ -157,7 +163,7 @@ class Formulario extends Conectar {
 
 
 
-                    }// end if( id>=0)
+              }// end if( id>=0)
     }
 
     private function listar_campos_sql(){
@@ -196,8 +202,13 @@ class Formulario extends Conectar {
     	$this->html_post_form = $t;
     }
 
-
+		/**
+		 * retorna el panel modal
+		 * - listar_controles() es la funcion que renderiza los controles del form
+		 */
     public function renderModal(){
+
+
         return '<div class="modal fade" id="'.$this->panel_nombre.'" role="dialog" tabindex="-1"  aria-hidden="true"><!-- PANEL MODAL -->
                   <div class="modal-dialog modal-lg" role="document"><!-- modal-dialog -->
                     <form action="" method="POST" name="'.$this->form_nombre.'" id="'.$this->form_nombre.'">

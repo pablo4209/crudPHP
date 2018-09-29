@@ -6,7 +6,7 @@
    * @param string $tipo texto que indica el tipo de mensaje. Los valores normales son Info, Error,
    *                                       Warn Debug, Critical
    */
-  function write_log( $cadena , $tipo )
+  function write_log( $cadena="" , $tipo="" )
   {
   	$arch = fopen( realpath( '.' )."/crud/application/logs/log_".date("Y-m-d").".txt", "a+");
 
