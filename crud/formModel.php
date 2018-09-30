@@ -125,7 +125,12 @@ class Formulario extends Conectar {
 																						.$valor.'>';
 																break;
 													case tipoDato::T_CHECK:
-																$check = "";$valor = ' value="0" ';
+																$check = "";
+																$valor = ' value="0" ';
+																if( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) && $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] > 0 ){
+																			$valor = ' value="'.$dato[0][$row[crudArg::C_NOMBRE_CAMPO]].'" ';
+																			$check = " checked ";
+																}
 
 																$control = '<div class="form-group validar">
 																							<div class="checkbox">
@@ -141,18 +146,29 @@ class Formulario extends Conectar {
 																break;
 													case tipoDato::T_SELECT:
 																if( is_array($row[crudArg::C_VALUE]) ){
+																			if( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) && $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] > 0 )
+																						$opcion_selec = $dato[0][$row[crudArg::C_NOMBRE_CAMPO]];
+																			else
+																						$opcion_selec = (isset($row[crudArg::C_VALUE][3]))? $row[crudArg::C_VALUE][3]	:	"" ;
+
+																			$control = '
+																									<div class="form-group validar" >
+																											<label for="'.$row[crudArg::C_NOMBRE_CAMPO].'">'.$row[crudArg::C_ALIAS].$asterisco.'</label>
+																														';
 
 																			//para los arg opcionales uso isset
 																								//parent::crearSelectTabla($tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
-																			$control = parent::crearSelectTabla( 	$row[crudArg::C_VALUE][0] ,		//tabla
+																			$control .= parent::crearSelectTabla( 	$row[crudArg::C_VALUE][0] ,		//tabla
 																																						$row[crudArg::C_VALUE][1] , 	//id
 																																						$row[crudArg::C_VALUE][2] ,  	//descripcion
-																																						(isset($row[crudArg::C_VALUE][3]))? $row[crudArg::C_VALUE][3]	:	"" ,  		//item seleccionado
+																																						$opcion_selec ,  							//item seleccionado
 																																						(isset($row[crudArg::C_VALUE][4]))? $row[crudArg::C_VALUE][4]	: "" ,		//descripcion [alternativa]
 																																						(isset($row[crudArg::C_VALUE][5]))? $row[crudArg::C_VALUE][5] : "" , 	//where
 																																						(isset($row[crudArg::C_VALUE][6]))? $row[crudArg::C_VALUE][6] : " input-medium required" , 	//cssClass =" input-medium required"
 																																						(isset($row[crudArg::C_VALUE][6]))? $row[crudArg::C_VALUE][7] : "Debes seleccionar un elemento."	  //toolTip
 																																				 );
+																			$control .= '
+																									</div>';
 																}
 																break;
 													default:
