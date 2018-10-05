@@ -223,11 +223,27 @@ Class Crud extends Conectar {
               };
 
 						var fnResetForm = function(){
-							$(".validar").each(function(){
-								$(this).removeClass("has-error has-success");
-								$(this).children(":input").val("");
-							});
-							$("#form_crud").validate().resetForm();
+									$(".crudControl").each(function(){
+											$(this).removeClass("has-error has-success");
+
+											if( $(this).is("input[type=text] , input[type=number] , input[type=hidden]") ){
+													$(this).val( $(this).attr("valdefault") );
+											}
+											if( $(this).is("select") ){
+													$(this).val( $(this).attr("valdefault") );
+											}
+											if( $(this).is("input[type=checkbox]") )
+													if( $(this).attr("valdefault") == 1 ){
+																	this.checked = true;
+																	$(this).attr( "value" , "1" );
+													}else{
+																	$(this).attr( "value" , "0" );
+																	this.checked = false;
+													}
+
+
+									});
+									$("#form_crud").validate().resetForm();
 						};
 
 						var fnAjaxEliminarItem = function(idprod){
@@ -305,18 +321,9 @@ Class Crud extends Conectar {
 													cache: false,
 													contentType: false,
 													processData: false,
-													//mientras enviamos el archivo
-													beforeSend: function(){
-														//$("#cargando").show();
-													},
-													//una vez finalizado correctamente
 													success: function(data){
 														//alert(data);
 														fnAjaxRenderTabla();
-													},
-													//si ha ocurrido un error
-													error: function(){
-														//$("#cargando").hide();
 													}
 											});
             	};

@@ -108,7 +108,7 @@ class Formulario extends Conectar {
 				                                                 .'" name="'.$row[crudArg::C_NOMBRE_CAMPO] . '"'
 				                                                 . $minlength
 				                                                 . $maxlength
-				                                                 .' type="'.$type.'" class="form-control input-medium '
+				                                                 .' type="'.$type.'" class="form-control input-medium crudControl'
 				                                                 .$cls_editable
 				                                                 .$extraclass
 				                                                 .$requerido.'" '
@@ -125,19 +125,23 @@ class Formulario extends Conectar {
 																						.$valor.'>';
 																break;
 													case tipoDato::T_CHECK:
-																$check = "";
+																$valorDefault = ' valDefault = "' . $row[crudArg::C_VALUE] . '" '; // deberia recibir 1 o 0
 																$valor = ' value="0" ';
 																if( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) && $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] > 0 ){
 																			$valor = ' value="'.$dato[0][$row[crudArg::C_NOMBRE_CAMPO]].'" ';
 																			$check = " checked ";
-																}
+																}else
+																			$check = ( $row[crudArg::C_VALUE] == 1 )? " checked " : ""; //usamos valor por defecto
+
+
 
 																$control = '<div class="form-group validar">
 																							<div class="checkbox">
 																							  <label>
-																									<input type="checkbox"
-																									id="'.$row[crudArg::C_NOMBRE_CAMPO]
-																									.'" name="'.$row[crudArg::C_NOMBRE_CAMPO] . '" '. $check . $valor . $disabled .' >'
+																									<input type="checkbox" '.
+																									$valorDefault .
+																									'id="'.$row[crudArg::C_NOMBRE_CAMPO]
+																									.'" class="crudControl" name="'.$row[crudArg::C_NOMBRE_CAMPO] . '" '. $check . $valor . $disabled .' >'
 																									.$row[crudArg::C_ALIAS].'
 																								</label>
 																							</div>
@@ -164,7 +168,7 @@ class Formulario extends Conectar {
 																																						$opcion_selec ,  							//item seleccionado
 																																						(isset($row[crudArg::C_VALUE][4]))? $row[crudArg::C_VALUE][4]	: "" ,		//descripcion [alternativa]
 																																						(isset($row[crudArg::C_VALUE][5]))? $row[crudArg::C_VALUE][5] : "" , 	//where
-																																						(isset($row[crudArg::C_VALUE][6]))? $row[crudArg::C_VALUE][6] : " input-medium required" , 	//cssClass =" input-medium required"
+																																						(isset($row[crudArg::C_VALUE][6]))? $row[crudArg::C_VALUE][6] : " input-medium crudControl required" , 	//cssClass =" input-medium required"
 																																						(isset($row[crudArg::C_VALUE][6]))? $row[crudArg::C_VALUE][7] : "Debes seleccionar un elemento."	  //toolTip
 																																				 );
 																			$control .= '
