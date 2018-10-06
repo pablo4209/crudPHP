@@ -389,21 +389,34 @@ public static function fecha(){
     }
 
     //Genera un select html con nombre e id, si $sel tiene valor lo selecciona, sino imprime seleccionar opcion con val=0
-    /*  id: el select toma el name e id con este valor, el valor del campo id es el value del select
-        desc: el campo descripcion de la Tabla
-        sel: id seleccionado por defecto
-        desc2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
-        where: filtro de la $consulta
-        cssClass: tiene las clases de control bootstrap por defecto y lo tilda como requerido para validate, cambiar el valor reemplaza el default
-
+    /**
+    *    $param: es un array asociativo: tabla, id y descripcion son los parametros obligatorios.
+    *    tabla: nombre de la tabla
+    *    id: el select toma el name e id con este valor, el valor del campo id es el value del select   *
+    *    descripcion: el campo descripcion de la Tabla
+    *    sel: id seleccionado por defecto
+    *    descripcion2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
+    *    where: filtro de la $consulta
+    *    cssClass: tiene las clases de control bootstrap por defecto y lo tilda como requerido para validate, cambiar el valor reemplaza el default
+    *    prop: sirve para agregar propiedades al control para ser manipuladas desde js
     */
-    protected function crearSelectTabla($tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
+    protected function crearSelectTabla( $param ) //$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
     {
+      $tabla = (isset($param["tabla"]))? $param["tabla"] : false;
+      $id = (isset($param["id"]))? $param["id"] : false;
+      $desc = (isset($param["descripcion"]))? $param["descripcion"] : false;
+      $sel = (isset($param["sel"]))? $param["sel"] : "" ;
+      $desc2= (isset($param["descripcion2"]))? $param["descripcion2"] : "";
+      $where = (isset($param["where"]))? $param["where"] : "";
+      $cssClass= (isset($param["cssClass"]))? $param["cssClass"] : " input-medium required";
+      $toolTip = (isset($param["toolTip"]))? $param["toolTip"] : "Debes seleccionar un elemento.";
+      $prop = (isset($param["prop"]))? $param["prop"] : "";
+
         $f=""; //se inicializan para evitar warnings
-		if(empty($tabla) or empty($id) or empty($desc))
-        {
-            return "Error al generar Select de Tabla ".$tabla ;
-        }
+  		if(empty($tabla) or empty($id) or empty($desc))
+          {
+              return "Error en parametros Select de Tabla: ".$tabla ;
+          }
 
         $sql = "Select * From ".$tabla." ".$where;
 
@@ -412,7 +425,7 @@ public static function fecha(){
         if($datos)
         {
             //dias
-            $f.= '<select name="'.$id.'" id="'.$id.'" min="1" title="'.$toolTip.'" class="form-control '.$cssClass.'">
+            $f.= '<select name="'.$id.'" id="'.$id.'" '.$prop.' min="1" title="'.$toolTip.'" class="form-control '.$cssClass.'">
                     <option value="0" ';
             if ($sel=="") $f.='selected="selected"';
             $f.= '>Seleccionar</option>';

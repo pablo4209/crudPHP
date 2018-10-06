@@ -3,7 +3,10 @@
 	require_once( 'crud/config.php' );
 
 										//$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
-	$selectEntidad = array( "tbentidad", "idEntidad", "Nombre", "1" );
+	$selectEntidad = [ "tabla" => "tbentidad",
+											"id" => "idEntidad",
+											"descripcion" => "Nombre",
+											"sel" => "1" ];
 
 	//Crud( nom_tabla, array(array( nom_campo, tipo_dato , alias , listar , editar , requerido, value, type, minlenght, maxlenght, placeholder , extraclass  )) )
 	$crud = new Crud ( "tbmoneda",
@@ -12,7 +15,7 @@
 							array( "Nombre" 		, tipoDato::T_STR 	 , "Nombre" 		, 1 , 1 , 1, "saraza"							, "text"		, 2, 50	, "ingresa un nombre", ""  ),
 				   		array( "Cambio" 		, tipoDato::T_INT 	 , "Cambio" 		, 1 , 1 , 1, "1"						,  "number"	, 1, 10	, "ingresa cambio", ""  ),
 							array( "idEntidad"  , tipoDato::T_SELECT , "Modificado por"    , 0 , 1 , 1, $selectEntidad ,  "number"	, 1, 1	, "", ""  ),
-							array( "Habilitada" , tipoDato::T_CHECK  , "Habilitada" , 0 , 1 , 1, 0 						,  "number"	, 1, 1	, "", ""  )
+							array( "Habilitada" , tipoDato::T_CHECK  , "Habilitada" , 0 , 1 , 1, 1 						,  "number"	, 1, 1	, "", ""  )
 						)
 					 ); //se pasan datos de tabla al constructor
 

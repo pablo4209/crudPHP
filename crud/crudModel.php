@@ -230,6 +230,7 @@ Class Crud extends Conectar {
 													$(this).val( $(this).attr("valdefault") );
 											}
 											if( $(this).is("select") ){
+													console.log("seleccionar opcion " + $(this).attr("valdefault"));
 													$(this).val( $(this).attr("valdefault") );
 											}
 											if( $(this).is("input[type=checkbox]") )
