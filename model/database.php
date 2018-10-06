@@ -411,6 +411,7 @@ public static function fecha(){
       $cssClass= (isset($param["cssClass"]))? $param["cssClass"] : " input-medium required";
       $toolTip = (isset($param["toolTip"]))? $param["toolTip"] : "Debes seleccionar un elemento.";
       $prop = (isset($param["prop"]))? $param["prop"] : "";
+      $disabled = (isset($param["disabled"]))? $param["disabled"] : "";
 
         $f=""; //se inicializan para evitar warnings
   		if(empty($tabla) or empty($id) or empty($desc))
@@ -425,7 +426,7 @@ public static function fecha(){
         if($datos)
         {
             //dias
-            $f.= '<select name="'.$id.'" id="'.$id.'" '.$prop.' min="1" title="'.$toolTip.'" class="form-control '.$cssClass.'">
+            $f.= '<select name="'.$id.'" id="'.$id.'" '.$prop.' min="1" title="'.$toolTip.'" class="form-control '.$cssClass.'" '.$disabled.'>
                     <option value="0" ';
             if ($sel=="") $f.='selected="selected"';
             $f.= '>Seleccionar</option>';

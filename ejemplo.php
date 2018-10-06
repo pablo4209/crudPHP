@@ -6,17 +6,17 @@
 	$selectEntidad = [ "tabla" => "tbentidad",
 											"id" => "idEntidad",
 											"descripcion" => "Nombre",
-											"sel" => "1" ];
+											"sel" => "1" 	];
 
 	//Crud( nom_tabla, array(array( nom_campo, tipo_dato , alias , listar , editar , requerido, value, type, minlenght, maxlenght, placeholder , extraclass  )) )
 	$crud = new Crud ( "tbmoneda",
-						array(
-							array( "idMoneda" 	, tipoDato::T_INT 	 , "ID" 				, 1 , 1 , 0, ""							, "number"	, 2, 10	, "", ""  ),
-							array( "Nombre" 		, tipoDato::T_STR 	 , "Nombre" 		, 1 , 1 , 1, "saraza"							, "text"		, 2, 50	, "ingresa un nombre", ""  ),
-				   		array( "Cambio" 		, tipoDato::T_INT 	 , "Cambio" 		, 1 , 1 , 1, "1"						,  "number"	, 1, 10	, "ingresa cambio", ""  ),
-							array( "idEntidad"  , tipoDato::T_SELECT , "Modificado por"    , 0 , 1 , 1, $selectEntidad ,  "number"	, 1, 1	, "", ""  ),
-							array( "Habilitada" , tipoDato::T_CHECK  , "Habilitada" , 0 , 1 , 1, 1 						,  "number"	, 1, 1	, "", ""  )
-						)
+						[
+							[ "idMoneda" 	, tipoDato::T_INT 	 , "ID" 						, 1 , 1 , 0, ""							, "number"	, 2, 10	, "", ""  ],
+							[ "Nombre" 		, tipoDato::T_STR 	 , "Nombre" 				, 1 , 1 , 1, "saraza"				, "text"		, 2, 50	, "ingresa un nombre", ""  ],
+				   		[ "Cambio" 		, tipoDato::T_INT 	 , "Cambio" 				, 1 , 1 , 1, "1"						,  "number"	, 1, 10	, "ingresa cambio", ""  ],
+							[ "idEntidad"  , tipoDato::T_SELECT , "Modificado por", 0 , 1 , 1, $selectEntidad ,  "number"	, 1, 1	, "", ""  ],
+							[ "Habilitada" , tipoDato::T_CHECK  , "Habilitada" 		, 0 , 1 , 1, 1 							,  "number"	, 1, 1	, "", ""  ]
+						]
 					 ); //se pasan datos de tabla al constructor
 
 

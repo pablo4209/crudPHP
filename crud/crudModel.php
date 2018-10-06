@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 	modo de iniciar la clase
 	-------------------------
 	IMPORTANTE!
@@ -27,13 +27,22 @@
 			   "idtabla = 2"			//tambien se pueden aplicar un filtro simple a los resultados de la tabla
 				);
 
-value cuando tipo_dato = tipoDato::T_SELECT
------------------------------------------------
-* para que se muestre este control, debe recibir un array para la siguiente funcion:
-		parent::crearSelectTabla($tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
-
-* tambien deberia recibir un array lista -> valor para que arme un selecto con ello, pero todavia no esta implementado
-
+*		value cuando tipo_dato = tipoDato::T_SELECT
+* 	-----------------------------------------------
+* 	para que se muestre este control, debe recibir un array asociativo para la siguiente funcion:
+*		parent::crearSelectTabla($param)
+*
+*    $param: es un array asociativo: "tabla"=>, "id"=> y "descripcion"=> son los parametros obligatorios, deben
+*    				 coincidir con su respectivo dato en la bd.*
+*    tabla: nombre de la tabla
+*    id: el select toma el name e id con este valor, el valor del campo id es el value del select
+*    descripcion: el campo descripcion de la Tabla
+*    sel: id seleccionado por defecto
+*    descripcion2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
+*    where: filtro de la $consulta
+*    cssClass: tiene las clases de control bootstrap por defecto y lo tilda como requerido para validate, cambiar el valor reemplaza el default
+*    prop: sirve para agregar propiedades al control para ser manipuladas desde js
+*
 */
 
 
@@ -224,7 +233,7 @@ Class Crud extends Conectar {
 
 						var fnResetForm = function(){
 									$(".crudControl").each(function(){
-											$(this).removeClass("has-error has-success");
+											$(this).parent().removeClass("has-error has-success");
 
 											if( $(this).is("input[type=text] , input[type=number] , input[type=hidden]") ){
 													$(this).val( $(this).attr("valdefault") );

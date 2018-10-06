@@ -155,7 +155,8 @@ class Formulario extends Conectar {
 																								$row[crudArg::C_VALUE] += [ "prop" => ' valdefault="'.$row[crudArg::C_VALUE]["sel"].'" ' ];
 																			if( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) && $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] > 0 ) //aca se carga valor si esta seteado $dato
 																								$row[crudArg::C_VALUE]["sel"] = $dato[0][$row[crudArg::C_NOMBRE_CAMPO]];
-
+																			if( !isset($row[crudArg::C_VALUE]["disabled"]) )
+																									$row[crudArg::C_VALUE] += [ "disabled" => $disabled ];
 																			$control = '
 																									<div class="form-group validar" >
 																											<label for="'.$row[crudArg::C_NOMBRE_CAMPO].'">'.$row[crudArg::C_ALIAS].$asterisco.'</label>
