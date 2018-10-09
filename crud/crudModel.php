@@ -86,7 +86,7 @@ Class Crud extends Conectar {
 	}
 
 	//imprime el script que escucha los formularios add y edit
-    private function renderAjax(){
+  private function renderAjax(){
 
         $form_datos = ""; //utilizado para enviar los datos hacia ajax
         $form_response =""; //utilizado para listar el js para cargar la espuesta json de ajax
