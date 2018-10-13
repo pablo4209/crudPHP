@@ -68,11 +68,13 @@ class Formulario extends Conectar {
 		*/
     private function listar_controles(){
 
+
+
         if( $this->edit_id > 0 ){ //si es >0 hay que recuperar los valores para cada campo
             $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0]["campo"] . "=?";
             $con = new Conectar();
             $dato = $con->getRowId( $sql , $this->edit_id );
-						if(CRUD_DEBUG) write_log("listar_controles::getRowId(listar_controles): ", var_export($dato, true) );
+						//if(CRUD_DEBUG) write_log("listar_controles::getRowId(listar_controles): ", var_export($dato, true) );
 				}
 
         $this->controles = '<input id="tabla_bd" name="tabla_bd" type="hidden" class="form-control" value="'.$this->tabla.'" >';
@@ -203,7 +205,6 @@ class Formulario extends Conectar {
 																break;
 												}
 									$this->controles .= $control;
-
 
 
               }// end if( id>=0)

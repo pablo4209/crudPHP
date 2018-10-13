@@ -60,7 +60,7 @@ Class Crud extends Conectar {
 	private $u;								//variable acumulador para guardar result consulta
 	private $titulo;					//titulo de la pagina
 	private $eliminar;				//si se muestra opcion eliminar o no en la tabla, boolean. por def:false
-
+	private $requeridos;			//bool, comprobacion al principio si los campos: "campo, tipo" estan presentes
 
 	function __construct( $tabla , $campos , $where = "" , $edit_id = 0 ){
 
@@ -69,12 +69,37 @@ Class Crud extends Conectar {
         $this->campos_array = $campos;
         $this->tabla = $tabla;
 				$this->where = $where;
-        self::listar_campos_sql();
+				self::setRequeridos();
+				self::listar_campos_sql();
         $this->titulo = "Listado de tabla: " . $tabla;
         $this->eliminar = false;
         $this->edit_id = $edit_id;
 
 	}
+
+	/**
+	 * revisa si los campos obligatorios tienen parametros
+	 */
+	private function setRequeridos(){
+
+
+		$this->requeridos = true;
+			if(empty($this->tabla)) $this->requeridos = false;
+			foreach ( $this->campos_array as $id => $row )
+						if(  empty($row["campo"]) ||
+								!isset($row["tipo"]) ) $this->requeridos = false;
+
+			if($this->requeridos == false) write_log("setRequeridos: ", "campos requeridos incorrectos.");
+	}
+
+	private function getRequeridos(){
+			if($this->requeridos)
+					return true;
+			else
+					return false;
+	}
+
+
 
 	public function setEliminar( $valor ){
 			$this->eliminar = $valor;
@@ -425,6 +450,7 @@ Class Crud extends Conectar {
 
 	private function listar_campos_sql(){
 
+		if(!self::getRequeridos()) return;
 		$cant = count($this->campos_array);
 		$listados =0 ;
 		for( $i=0 ; $i<$cant ; $i++ )
@@ -438,6 +464,11 @@ Class Crud extends Conectar {
 	}
 
 	public function render(){
+		if(!self::getRequeridos())
+							return '<div class="row"><div class="col-md-10">
+																<div class="alert alert-info" role="alert"><strong>Errores en CRUD</strong>....ver log</div>
+																</div>
+											</div>';
 		return  '<div class="clearfix"></div>
 				<div class="row" name="tabla_div" id="tabla_div">
 					<div class="panel panel-default"><!-- PANEL -->
