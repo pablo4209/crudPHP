@@ -1,32 +1,38 @@
 <?php
 /**
-	modo de iniciar la clase
-	-------------------------
-	IMPORTANTE!
-	el indice de la tabla siempre debe ser el primer campo, porque asi se asume en la clase,
-	sin importar si se visualiza o no
-	- el campo indice siempre se mostrara disabled
-	--------------
-
-	$c = new Crud( 	nombre_tabla,		//string con el nombre de la tabla
-					array(
-									array( 	nombre_campo ,    //nombre del campo
-													tipo_dato (constante) , 	//constante con el tipo del campo (ej: T_HIDDEN, input oculto)
-													alias , 			//nombre a mostrar, si "" se usa nombre_tabla
-													mostrar_listado ,  	//boolean, si se muestra en el listado
-													editar , 			//boolean, si se edita en form
-													requerido,			//boolean, requerido en caso de usarse en form
-													value,
-													type,
-													minlenght,
-													maxlenght,
-													placeholder ,
-													extraclass
-										)
-					),
-			   "idtabla = 2"			//tambien se pueden aplicar un filtro simple a los resultados de la tabla
-				);
-
+*	modo de iniciar la clase
+*	-------------------------
+*	IMPORTANTE!
+*	el indice de la tabla siempre debe ser el primer campo, porque asi se asume en la clase,
+*	sin importar si se visualiza o no
+*	- el campo indice siempre se mostrara disabled
+*	--------------
+*
+*	$c = new Crud( 	nombre_tabla,		//string con el nombre de la tabla
+*					campos,									// array clave => valor con la configuracion de campos
+*			   "idtabla = 2"						//tambien se pueden aplicar un filtro simple a los resultados de la tabla
+*				);
+*
+* 	Parametro campos
+* 	----------------------------------------------
+* 	Recibe un array asociativo de tipo ["clave" => "valor"]
+* 	(campos obligatorios: campo, tipo)
+* 				[
+*										[ 		"campo" 	=> 	"nombre_campo" ,    //nombre del campo
+*													"tipo"		=> 	"tipo_dato" (constante) , 	//constante con el tipo del campo (ej: T_HIDDEN, input oculto)
+*													"alias"		=> 	"alias" , 			//nombre a mostrar, si "" se usa nombre_tabla
+*													"listar" 	=>	0 ,  	//boolean, si se muestra en el listado
+*													"editar"	=>	0 ,		//boolean, si se edita en form
+*													"requerido"	=>	1	,			//boolean, requerido en caso de usarse en form
+*													"value"		=>	"" ,	//string o en campo select ver documentacion
+*													"type"		=>	"text"	,	//son los tipo para input
+*													"minlenght"	=> 20	,	//numero
+*													"maxlenght"	=> 50	,	//numero
+*													"placeholder" => "frase para control vacio",
+*													"extraclass"	=>	""	//clases extra!
+*										]
+*					]
+*
 *		value cuando tipo_dato = tipoDato::T_SELECT
 * 	-----------------------------------------------
 * 	para que se muestre este control, debe recibir un array asociativo para la siguiente funcion:
@@ -91,30 +97,46 @@ Class Crud extends Conectar {
         $form_datos = ""; //utilizado para enviar los datos hacia ajax
         $form_response =""; //utilizado para listar el js para cargar la espuesta json de ajax
         foreach ( $this->campos_array as $id => $row )
-						if( $id >= 0 ){  //$row[self::C_LISTAR] AND / el id no se incluye
-									$form_datos .= 'formData.append("'.$row[crudArg::C_NOMBRE_CAMPO].'", $("#'.$row[crudArg::C_NOMBRE_CAMPO].'").val() );
+						if( $id >= 0 ){
+									$form_datos .= 'formData.append("'.$row["campo"].'", $("#'.$row["campo"].'").val() );
 													';
-									switch ($row[crudArg::C_TIPO_CAMPO]) {
+									switch ($row["campo"]) {
 										case tipoDato::T_INT:
+										case tipoDato::T_NUMBER:
+										case tipoDato::T_DATETIME:
+										case tipoDato::T_DATE:
+										case tipoDato::T_TIME:
+										case tipoDato::T_EMAIL:
+										case tipoDato::T_PASSWORD:
+										case tipoDato::T_RESET:
+										case tipoDato::T_TEL:
+										case tipoDato::T_MONTH:
+										case tipoDato::T_RANGE:
+										case tipoDato::T_COLOR:
+										case tipoDato::T_SEARCH:
+										case tipoDato::T_URL:
+										case tipoDato::T_WEEK:
+										case tipoDato::T_BUTTON:
+										case tipoDato::T_TEXT:
 										case tipoDato::T_STR:
 										case tipoDato::T_HIDDEN:
 												//se carga cada asignacion de valor json a los campos del form
 												$form_response .=  '
-															$("#'.$row[crudArg::C_NOMBRE_CAMPO].'").attr( "value" , data[0].'.$row[crudArg::C_NOMBRE_CAMPO].');';
+															$("#'.$row["campo"].'").attr( "value" , data[0].'.$row["campo"].');';
 												break;
 										case tipoDato::T_CHECK:
 												$form_response .=  '
-														$("#'.$row[crudArg::C_NOMBRE_CAMPO].'").attr( "value" , data[0].'.$row[crudArg::C_NOMBRE_CAMPO].');
-														if( data[0].'.$row[crudArg::C_NOMBRE_CAMPO].' > 0 )
-																	$("#'.$row[crudArg::C_NOMBRE_CAMPO].'").prop( "checked" , true );
+														$("#'.$row["campo"].'").attr( "value" , data[0].'.$row["campo"].');
+														if( data[0].'.$row["campo"].' > 0 )
+																	$("#'.$row["campo"].'").prop( "checked" , true );
 														else
-																	$("#'.$row[crudArg::C_NOMBRE_CAMPO].'").prop( "checked" , false );
+																	$("#'.$row["campo"].'").prop( "checked" , false );
 														';
 
 												break;
 										case tipoDato::T_SELECT:
 											$form_response .= '
-																				$( "#'.$row[crudArg::C_NOMBRE_CAMPO].' option:selected" ).val();';
+																				$( "#'.$row["campo"].' option:selected" ).val();';
 											break;
 										default:
 												// code...
@@ -185,7 +207,7 @@ Class Crud extends Conectar {
 
 							formData.append( "crud-edit" , 1 );
 							formData.append( "tabla_bd" , $("#tabla_bd").val() );
-							formData.append( "campo_id" , "'.$this->campos_array[0][crudArg::C_NOMBRE_CAMPO].'" ); //envio el nombre del campo_id para identificarlo
+							formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" ); //envio el nombre del campo_id para identificarlo
 							'.$form_datos.'
 
 							$.ajax({
@@ -262,7 +284,7 @@ Class Crud extends Conectar {
 
 									formData.append( "crud-del" , 1 );
 									formData.append( "tabla_bd" , $("#tabla_bd").val() );
-									formData.append( "campo_id" , "'.$this->campos_array[0][crudArg::C_NOMBRE_CAMPO].'" );
+									formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" );
 									formData.append( "idprod" , idprod );
 
 									$.ajax({
@@ -321,7 +343,7 @@ Class Crud extends Conectar {
 
 											formData.append( "crud-add" , 1 );
 											formData.append( "tabla_bd" , $("#tabla_bd").val() );
-											formData.append( "campo_id" , "'.$this->campos_array[0][crudArg::C_NOMBRE_CAMPO].'" ); //envio el nombre del campo_id para identificarlo
+											formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" ); //envio el nombre del campo_id para identificarlo
 											'.$form_datos.'
 
 											$.ajax({
@@ -401,20 +423,17 @@ Class Crud extends Conectar {
 		return $clsEdit->renderAdd();
 	}
 
-
-
 	private function listar_campos_sql(){
 
 		$cant = count($this->campos_array);
 		$listados =0 ;
 		for( $i=0 ; $i<$cant ; $i++ )
-			if( $this->campos_array[$i][crudArg::C_LISTAR] &&
-					$this->campos_array[$i][crudArg::C_TIPO_CAMPO] != tipoDato::T_SELECT ){
+			if( $this->campos_array[$i]["listar"] &&
+					$this->campos_array[$i]["campo"] != tipoDato::T_SELECT ){
 				$separador = ( $listados )? ", " : " ";
-				$this->campos_sql .= $separador . $this->campos_array[$i][crudArg::C_NOMBRE_CAMPO] ;
+				$this->campos_sql .= $separador . $this->campos_array[$i]["campo"] ;
 				$listados++;
 			}
-
 
 	}
 
@@ -457,10 +476,10 @@ Class Crud extends Conectar {
 			$tabla = '<div class="table-responsive"><!-- DIV TABLE_RESPONSIVE -->
 					   		<table class="table table-striped table-hover table-bordered"><thead class="thead-dark"><tr>';
 			foreach ( $this->campos_array as $id => $row )
-					if( $row[crudArg::C_LISTAR] ){  //mostrar en listado?
+					if( $row["listar"] ){  //mostrar en listado?
 						$col++;
 						$clase = ( $id == 0 )? ' class="col-md-2 col-sm-2 col-xs-2" ': "" ;
-						$tabla .= '<th scope="col" '.$clase.' >'.$row[crudArg::C_ALIAS]."</th>" ;
+						$tabla .= '<th scope="col" '.$clase.' >'.$row["alias"]."</th>" ;
 					}
 
 

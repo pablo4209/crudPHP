@@ -10,13 +10,52 @@
 
 	//Crud( nom_tabla, array(array( nom_campo, tipo_dato , alias , listar , editar , requerido, value, type, minlenght, maxlenght, placeholder , extraclass  )) )
 	$crud = new Crud ( "tbmoneda",
-						[
-							[ "idMoneda" 	, tipoDato::T_INT 	 , "ID" 						, 1 , 1 , 0, ""							, "number"	, 2, 10	, "", ""  ],
-							[ "Nombre" 		, tipoDato::T_STR 	 , "Nombre" 				, 1 , 1 , 1, "saraza"				, "text"		, 2, 50	, "ingresa un nombre", ""  ],
-				   		[ "Cambio" 		, tipoDato::T_INT 	 , "Cambio" 				, 1 , 1 , 1, "1"						,  "number"	, 1, 10	, "ingresa cambio", ""  ],
-							[ "idEntidad"  , tipoDato::T_SELECT , "Modificado por", 0 , 1 , 1, $selectEntidad ,  "number"	, 1, 1	, "", ""  ],
-							[ "Habilitada" , tipoDato::T_CHECK  , "Habilitada" 		, 0 , 1 , 1, 1 							,  "number"	, 1, 1	, "", ""  ]
-						]
+											[
+												[ 		"campo" 	=> 	"idMoneda" ,
+															"tipo"		=> 	tipoDato::T_INT,
+															"alias"		=> 	"ID" ,
+															"listar" 	=>	1 ,
+															"editar"	=>	1
+												],
+												[ 			"campo"	=> 	"Nombre" 		,
+																"tipo" 	=>	tipoDato::T_TEXT ,
+																"alias"	=>	"Nombre",
+															 "listar" => 1 ,
+															 "editar" => 1 ,
+														"requerido" => 1,
+																"value"	=>	"nombre_campo" ,
+														"minlenght"	=>	2,
+														"maxlenght"	=> 50	,
+													"placeholder"	=> "ingresa un nombre"
+												],
+				   							[ 			"campo"	=>	"Cambio" 		,
+																 "tipo" => 	tipoDato::T_NUMBER 	 ,
+														 	  "alias"	=> 	"Cambio" 				,
+															 "listar" => 1 ,
+															 "editar" => 1 ,
+														"requerido" => 1,
+																"value" => 1						,
+														"minlenght" => 1,
+														"maxlenght" => 10	,
+													 "placehlder" => "ingresa cambio"
+												],
+												[ 			"campo"	=>	"idEntidad"  ,
+																"tipo"	=> tipoDato::T_SELECT ,
+																"alias"	=>	"Modificado por",
+															"listar"	=>	0 ,
+															"editar"	=>	1 ,
+														"requerido"	=>	1,
+																"value"	=>	$selectEntidad
+												],
+												[ 			"campo"	=>	"Habilitada" ,
+																"tipo"	=>	tipoDato::T_CHECK  ,
+																"alias"	=>	"Habilitada" 		,
+															"listar"	=>	0 ,
+															"editar"	=>	1 ,
+														"requerido"	=>	1,
+																"value"	=>	1	,
+												]
+											]
 					 ); //se pasan datos de tabla al constructor
 
 

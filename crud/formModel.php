@@ -51,7 +51,7 @@ class Formulario extends Conectar {
 
     public function listar_valores(){
         if( $this->edit_id ){ //si es >0 hay que recuperar los calores para cada campo
-            $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0][crudArg::C_NOMBRE_CAMPO] . "=?";
+            $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0]["campo"] . "=?";
 
             $con = new Conectar();
             $dato = $con->getRowId( $sql , $this->edit_id );
@@ -62,17 +62,17 @@ class Formulario extends Conectar {
     }
 
 
-    /* FALTA REVISAR SI SE TRATA DE UNA EDICION LA CARGA DEL VALUE,
-		* ya que solo dibuja los controles, la carga de datos se realiza con fnAjaxCompletarFormulario
-		*  *** SE TERMINA LA CARGA DE VALORES POR AJAX, FALLA LA ACTUALIZACION DE CONTROLES, SE REDIBUJAN DIRECTAMENTE
+    /**
+		*
+		*  los controles se renderizan por completo cada vez
 		*/
     private function listar_controles(){
 
         if( $this->edit_id > 0 ){ //si es >0 hay que recuperar los valores para cada campo
-            $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0][crudArg::C_NOMBRE_CAMPO] . "=?";
+            $sql = "SELECT * FROM " . $this->tabla . " WHERE " . $this->campos_array[0]["campo"] . "=?";
             $con = new Conectar();
             $dato = $con->getRowId( $sql , $this->edit_id );
-						//if(CRUD_DEBUG) write_log("listar_controles::getRowId: ", var_export($dato, true) );
+						if(CRUD_DEBUG) write_log("listar_controles::getRowId(listar_controles): ", var_export($dato, true) );
 				}
 
         $this->controles = '<input id="tabla_bd" name="tabla_bd" type="hidden" class="form-control" value="'.$this->tabla.'" >';
@@ -80,32 +80,53 @@ class Formulario extends Conectar {
         $autofoco = '';
         foreach ( $this->campos_array as $id => $row )
             	if( $id >= 0 ){  //mostrar en listado?
-                        $type = $row[crudArg::C_TYPE];
-                        $disabled = ( $row[crudArg::C_EDITAR] && $id != 0 )? '' : ' disabled'; //nunca editar id
+                        $type = tipoDato::getType($row["tipo"]); //la funcion retorna el texto indicado
+                        $disabled = ( !empty($row["editar"]) && $id != 0 )? '' : ' disabled'; //nunca editar id
                         $cls_editable = '';
-												if($row[crudArg::C_TIPO_CAMPO] == tipoDato::T_HIDDEN ){
-														$type = "hidden"; //no importa lo que tenga C_TYPE
-														$cls_editable = '';
-												}
-												$requerido = ( $row[crudArg::C_REQUERIDO] )? ' required':'' ;
-                        $asterisco = ( $row[crudArg::C_REQUERIDO] )? ' (*)' : '';
-                        $minlength = ( $row[crudArg::C_MIN] !='' )? ' minlength="'.$row[crudArg::C_MIN].'"' : '';
-                        $maxlength = ( $row[crudArg::C_MAX] !='' )? ' maxlength="'.$row[crudArg::C_MAX].'"' : '';
-                        $extraclass = ( $row[crudArg::C_CLASS] !='' )? ' '.$row[crudArg::C_CLASS] : '';
-                        $place = ( $row[crudArg::C_PLACE] != '' )? 'placeholder="'.$row[crudArg::C_PLACE].'"' : '';
-												if( !is_array($row[crudArg::C_VALUE]) )
-													$valorDefault = ' valDefault = "' . $row[crudArg::C_VALUE] . '" ';
-												$valor = ' value="' . ( (isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]))? $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] : $this->campos_array[0][crudArg::C_VALUE] ) . '" ';
+												$alias = ( !empty($row["alias"]) )?	$row["alias"] : $row["campo"];
+												$requerido = ( !empty($row["requerido"]) )? ' required':'' ;
+                        $asterisco = ( !empty($row["requerido"]) )? ' (*)' : '';
+                        $minlength = ( !empty($row["minlenght"]) )? ' minlength="'.$row["minlenght"].'"' : '';
+                        $maxlength = ( !empty($row["maxlenght"]) )? ' maxlength="'.$row["maxlenght"].'"' : '';
+                        $extraclass = ( !empty($row["extraclass"]) )? ' '.$row["extraclass"] : '';
+                        $place = ( !empty($row["placeholder"]) )? 'placeholder="'.$row["placeholder"].'"' : '';
 
+												$valorDefault=' valDefault=""';
+												$valor=' value=""';
+												if(!empty($dato[0][$row["campo"]])){
+															$valor = ' value="' . $dato[0][$row["campo"]] . '" ';
+												}else
+														if( !empty($row["value"]) )
+															if( !is_array($row["value"]) )
+																{ //si es array se trata del value de un select
+																	$valor = ' value="' . $row["value"] . '" ';
+																	$valorDefault = ' valDefault = "' . $row["value"]  . '" ';
+																}
 												//en esta parte hay que determinar que tipo de control renderizar
-												switch ($row[crudArg::C_TIPO_CAMPO]) {
+												switch ($row["tipo"]) {
 													case tipoDato::T_INT:
+													case tipoDato::T_NUMBER:
+													case tipoDato::T_DATETIME:
+													case tipoDato::T_DATE:
+													case tipoDato::T_TIME:
+													case tipoDato::T_EMAIL:
+													case tipoDato::T_PASSWORD:
+													case tipoDato::T_RESET:
+													case tipoDato::T_TEL:
+													case tipoDato::T_MONTH:
+													case tipoDato::T_RANGE:
+													case tipoDato::T_COLOR:
+													case tipoDato::T_SEARCH:
+													case tipoDato::T_URL:
+													case tipoDato::T_WEEK:
+													case tipoDato::T_BUTTON:
+													case tipoDato::T_TEXT:
 													case tipoDato::T_STR:
 																$control = '<div class="form-group validar">
-				                                                <label for="'.$row[crudArg::C_NOMBRE_CAMPO].'" >'
-				                                                             .$row[crudArg::C_ALIAS].$asterisco.'</label>
-				                                                <input id="'.$row[crudArg::C_NOMBRE_CAMPO]
-				                                                 .'" name="'.$row[crudArg::C_NOMBRE_CAMPO] . '"'
+				                                                <label for="'.$row["campo"].'" >'
+				                                                             .$alias.$asterisco.'</label>
+				                                                <input id="'.$row["campo"]
+				                                                 .'" name="'.$row["campo"] . '"'
 				                                                 . $minlength
 				                                                 . $maxlength
 				                                                 .' type="'.$type.'" class="form-control input-medium crudControl'
@@ -120,50 +141,59 @@ class Formulario extends Conectar {
 				                                            </div>';      //' .($row[crudArg::C_REQUERIDO])? required':'' . '
 																break;
 													case tipoDato::T_HIDDEN:
-																$control = '<input type="hidden" id="'.$row[crudArg::C_NOMBRE_CAMPO]
-																						.'" name="'.$row[crudArg::C_NOMBRE_CAMPO] . '" '
+																$control = '<input type="hidden" id="'.$row["campo"]
+																						.'" name="'.$row["campo"] . '" '
 																						.$valor.'>';
 																break;
 													case tipoDato::T_CHECK:
-																$valorDefault = ' valDefault = "' . $row[crudArg::C_VALUE] . '" '; // deberia recibir 1 o 0
-																$valor = ' value="0" ';
-																if( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) && $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] > 0 ){
-																			$valor = ' value="'.$dato[0][$row[crudArg::C_NOMBRE_CAMPO]].'" ';
-																			$check = " checked ";
-																}else
-																			$check = ( $row[crudArg::C_VALUE] == 1 )? " checked " : ""; //usamos valor por defecto
+																$check="";
+																if(empty($row["value"])){ //si value existe ya viene cargado con el valor default correcto
+																	 	$valorDefault = ' valDefault = "0" ';
+																		$valor = ' value="0" '; //cuando value no existe o vale 0
+																}else {
+																	 	$check = " checked"; //cuando value existe y distinto de 0
+																}
+
+																if( isset($dato[0][$row["campo"]]) ){
+																			$valor = ' value="'.$dato[0][$row["campo"]].'" ';
+																			if($dato[0][$row["campo"]]>0)
+																						$check = " checked ";
+																			else
+																						$check = ""; //necesario porque sino se checkea si valueDefault=1
+																}
+
 
 																$control = '<div class="form-group validar">
 																							<div class="checkbox">
 																							  <label>
 																									<input type="checkbox" '.
 																									$valorDefault .
-																									'id="'.$row[crudArg::C_NOMBRE_CAMPO]
-																									.'" class="crudControl" name="'.$row[crudArg::C_NOMBRE_CAMPO] . '" '. $check . $valor . $disabled .' >'
-																									.$row[crudArg::C_ALIAS].'
+																									'id="'.$row["campo"]
+																									.'" class="crudControl" name="'.$row["campo"] . '" '. $check . $valor . $disabled .' >'
+																									.$alias.'
 																								</label>
 																							</div>
 																						</div>
 																						';
 																break;
 													case tipoDato::T_SELECT:
-																if( is_array($row[crudArg::C_VALUE]) ){
+																if( is_array($row["value"]) ){
 
-																			if( !isset($row[crudArg::C_VALUE]["sel"]) ) //si no existe se agrega
-																								$row[crudArg::C_VALUE] += [ "sel" => "" ];
-																			if( !isset($row[crudArg::C_VALUE]["valdefault"]) ) //si no existe se agrega
-																								$row[crudArg::C_VALUE] += [ "prop" => ' valdefault="'.$row[crudArg::C_VALUE]["sel"].'" ' ];
-																			if( isset($dato[0][$row[crudArg::C_NOMBRE_CAMPO]]) && $dato[0][$row[crudArg::C_NOMBRE_CAMPO]] > 0 ) //aca se carga valor si esta seteado $dato
-																								$row[crudArg::C_VALUE]["sel"] = $dato[0][$row[crudArg::C_NOMBRE_CAMPO]];
-																			if( !isset($row[crudArg::C_VALUE]["disabled"]) )
-																									$row[crudArg::C_VALUE] += [ "disabled" => $disabled ];
+																			if( !isset($row["value"]["sel"]) ) //si no existe se agrega
+																								$row["value"] += [ "sel" => "" ];
+																			if( !isset($row["value"]["valdefault"]) ) //si no existe se agrega
+																								$row["value"] += [ "prop" => ' valdefault="'.$row["value"]["sel"].'" ' ];
+																			if( isset($dato[0][$row["campo"]]) && $dato[0][$row["campo"]] > 0 ) //aca se carga valor si esta seteado $dato
+																								$row["value"]["sel"] = $dato[0][$row["campo"]];
+																			if( !isset($row["value"]["disabled"]) )
+																									$row["value"] += [ "disabled" => $disabled ];
 																			$control = '
 																									<div class="form-group validar" >
-																											<label for="'.$row[crudArg::C_NOMBRE_CAMPO].'">'.$row[crudArg::C_ALIAS].$asterisco.'</label>
+																											<label for="'.$row["campo"].'">'.$alias.$asterisco.'</label>
 																														';
-																			if( !isset($row[crudArg::C_VALUE]["cssClass"]) )
-																														$row[crudArg::C_VALUE] += [ "cssClass" => " input-medium crudControl required" ] ; 	//cssClass =" input-medium required"
-																			$control .= parent::crearSelectTabla( $row[crudArg::C_VALUE] );
+																			if( !isset($row["value"]["cssClass"]) )
+																														$row["value"] += [ "cssClass" => " input-medium crudControl required" ] ; 	//cssClass =" input-medium required"
+																			$control .= parent::crearSelectTabla( $row["value"] );
 																			$control .= '
 																									</div>';
 																}
@@ -184,9 +214,9 @@ class Formulario extends Conectar {
         $cant = count($this->campos_array);
         $listados =0 ;
         for( $i=0 ; $i<$cant ; $i++ )
-            if( $this->campos_array[$i][crudArg::C_LISTAR] ){
+            if( $this->campos_array[$i]["listar"] ){
                 $separador = ( $i!=$cant-1 AND $listados )? ", " : " ";
-                $this->campos_sql .= $separador . $this->campos_array[$i][crudArg::C_NOMBRE_CAMPO] ;
+                $this->campos_sql .= $separador . $this->campos_array[$i]["campo"] ;
                 $listados++;
             }
 
