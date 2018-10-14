@@ -95,7 +95,8 @@ class Formulario extends Conectar {
 
 												$valorDefault=' valDefault=""';
 												$valor=' value=""';
-												if( isset($dato[0][$row["campo"]])){
+												
+												if( isset($dato[0][$row["campo"]]) ){
 															$valor = ' value="' . $dato[0][$row["campo"]] . '" ';
 												}else
 														if( isset($row["value"]) )
