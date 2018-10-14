@@ -28,7 +28,7 @@
 														"maxlenght"	=> 50	,
 													"placeholder"	=> "ingresa un nombre"
 												],
-				   							[ 			"campo"	=>	"cambio",
+				   							[ 			"campo"	=>	"Cambio",
 																 "tipo" => 	tipoDato::T_NUMBER 	 ,
 														 	  "alias"	=> 	"Cambio" 				,
 															 "listar" => 1 ,
