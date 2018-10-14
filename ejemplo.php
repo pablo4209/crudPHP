@@ -34,7 +34,7 @@
 															 "listar" => 1 ,
 															 "editar" => 1 ,
 														"requerido" => 1,
-																"value" => 1						,
+																"value" => 1,
 														"minlenght" => 1,
 														"maxlenght" => 10	,
 													 "placehlder" => "ingresa cambio"

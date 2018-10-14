@@ -95,10 +95,10 @@ class Formulario extends Conectar {
 
 												$valorDefault=' valDefault=""';
 												$valor=' value=""';
-												if(!empty($dato[0][$row["campo"]])){
+												if( isset($dato[0][$row["campo"]])){
 															$valor = ' value="' . $dato[0][$row["campo"]] . '" ';
 												}else
-														if( !empty($row["value"]) )
+														if( isset($row["value"]) )
 															if( !is_array($row["value"]) )
 																{ //si es array se trata del value de un select
 																	$valor = ' value="' . $row["value"] . '" ';
