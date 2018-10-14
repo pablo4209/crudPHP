@@ -140,7 +140,7 @@ class Formulario extends Conectar {
 																												 . $valorDefault
 				                                                 . $disabled
 				                                                 .' >
-				                                            </div>';      //' .($row[crudArg::C_REQUERIDO])? required':'' . '
+				                                            </div>';      
 																break;
 													case tipoDato::T_HIDDEN:
 																$control = '<input type="hidden" id="'.$row["campo"]
