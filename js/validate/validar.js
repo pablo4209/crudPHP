@@ -1,5 +1,5 @@
-$(function(){	    
-	
+$(function(){
+
 
     //clases propias de validacion
     jQuery.validator.addClassRules({
@@ -30,15 +30,15 @@ $(function(){
 	jQuery.validator.addMethod('lesserThan', function(value, element, param) {
 		return ( value < param );
 	}, 'Debes ingresar un valor menor.' );
-    
-    
 
-    $("#form_crud").validate({                                
+
+
+    $("#form_"+$("#tabla_bd").val() ).validate({
                 errorElement: "em",
                 errorPlacement: function ( error, element ) {
                         // Add the `help-block` class to the error element
                         error.addClass( "help-block" );
-
+                        
                         if ( element.prop( "type" ) === "checkbox" ) {
                             error.insertAfter( element.parent( "label" ) );
                         } else {
@@ -57,8 +57,8 @@ $(function(){
 
 
     });
-    
 
-    
+
+
 
 });

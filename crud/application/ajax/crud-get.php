@@ -14,7 +14,7 @@ if( isset($_POST['datos'])  ){
 
 	if( $datos[0]["crud-completar-formulario"] == 1 ){
 
-			require_once( 'crud/crudModel.php' );
+			require_once( CRUD_ROOT.'crud/crudModel.php' );
 
 			$crud = new Crud ( $datos[0]["tabla_bd"] ,
 							   $datos[1] ,

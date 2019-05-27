@@ -186,7 +186,7 @@ Class Crud extends Conectar {
 
 
                         	$("body").on( "click" , "#guardar" , function(){
-	                        		if( $("#form_crud").valid() == true ){
+	                        		if( $("#form_'.$this->tabla.'").valid() == true ){
 	                        			if( $("#modal_mode").val() == "add" ){
 																			fnAjaxAdd();
 	                        			}else{
@@ -236,7 +236,7 @@ Class Crud extends Conectar {
 							'.$form_datos.'
 
 							$.ajax({
-								url: "ajax-crud.php/?mode=crud-edit",
+								url: "'.CRUD_ROOT.'ajax-crud.php/?mode=crud-edit",
 								type: "POST",
 								data: formData,
 								cache: false,
@@ -275,7 +275,7 @@ Class Crud extends Conectar {
 															$("#modal_mode").val("edit");
                         	}
 
-													$("#panel_crud").modal("show");
+													$("#panel_'.$this->tabla.'").modal("show");
               };
 
 						var fnResetForm = function(){
@@ -300,7 +300,7 @@ Class Crud extends Conectar {
 
 
 									});
-									$("#form_crud").validate().resetForm();
+									$("#form_'.$this->tabla.'").validate().resetForm();
 						};
 
 						var fnAjaxEliminarItem = function(idprod){
@@ -313,7 +313,7 @@ Class Crud extends Conectar {
 									formData.append( "idprod" , idprod );
 
 									$.ajax({
-												url: "ajax-crud.php/?mode=crud-del",
+												url: "'.CRUD_ROOT.'ajax-crud.php/?mode=crud-del",
 												type: "POST",
 												data: formData,
 												cache: false,
@@ -353,11 +353,11 @@ Class Crud extends Conectar {
 									jsonStr = JSON.stringify(arreglo);
 
 									$.ajax({
-									   url: "ajax-crud.php/?mode=crud-list",
+									   url: "'.CRUD_ROOT.'ajax-crud.php/?mode=crud-list",
 									   data: { datos: jsonStr },
 									   type: "POST",
 									   success: function(response) {
-									      	$("#panel_crud").modal("hide");
+									      	$("#panel_'.$this->tabla.'").modal("hide");
 									      	$("#div_tabla").html(response);
 									   }
 									});
@@ -372,7 +372,7 @@ Class Crud extends Conectar {
 											'.$form_datos.'
 
 											$.ajax({
-													url: "ajax-crud.php/?mode=crud-add",
+													url: "'.CRUD_ROOT.'ajax-crud.php/?mode=crud-add",
 													type: "POST",
 													data: formData,
 													cache: false,
@@ -399,7 +399,7 @@ Class Crud extends Conectar {
 							jsonStr = JSON.stringify(arreglo);
 
 							$.ajax({
-							   url: "ajax-crud.php/?mode=crud-get",
+							   url: "'.CRUD_ROOT.'ajax-crud.php/?mode=crud-get",
 							   data: { datos: jsonStr },
 							   type: "POST",
 								 cache: false,

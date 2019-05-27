@@ -34,14 +34,15 @@ class Formulario extends Conectar {
         parent::__construct();
         $this->u=array();
         $this->titulo = "Formulario CRUD";
-        $this->form_nombre = "form_crud";
         $this->controles = "";
         $this->html_pre_form = "";
         $this->html_dentro_form = "";
         $this->html_post_form = "";
-        $this->panel_nombre = "panel_crud";
         $this->campos_array = $campos;
         $this->tabla = $tabla;
+				$this->form_nombre = "form_".$this->tabla;
+				$this->titulo = "Formulario CRUD(".$this->tabla.")";
+				$this->panel_nombre = "panel_".$this->tabla;
 				$this->where = $where;
         $this->edit_id = $edit_id;
         self::listar_campos_sql();
@@ -95,7 +96,7 @@ class Formulario extends Conectar {
 
 												$valorDefault=' valDefault=""';
 												$valor=' value=""';
-												
+
 												if( isset($dato[0][$row["campo"]]) ){
 															$valor = ' value="' . $dato[0][$row["campo"]] . '" ';
 												}else
@@ -141,7 +142,7 @@ class Formulario extends Conectar {
 																												 . $valorDefault
 				                                                 . $disabled
 				                                                 .' >
-				                                            </div>';      
+				                                            </div>';
 																break;
 													case tipoDato::T_HIDDEN:
 																$control = '<input type="hidden" id="'.$row["campo"]

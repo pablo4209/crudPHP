@@ -8,9 +8,9 @@ define( "USE_DB" , 1 );
 define( 'CRUD_DEBUG' , 1 );
 
 //directorios usados
-define( "ROOT" , "/var/www/html/crudPHP/" );
-define ( "MODEL" , ROOT . "model/" );
-define ( "CRUD_AJAX" ,  ROOT . "crud/application/ajax/" );
+define( "CRUD_ROOT" , "" ); // ACA INDICAR RUTA AL DIRECTORIO PRINCIPAL DEL CRUD EN EL PROYECTO DONDE SE USA
+define ( "MODEL" , CRUD_ROOT . "model/" );
+define ( "CRUD_AJAX" ,  CRUD_ROOT . "crud/application/ajax/" );
 
 
  //constantes de conexion
@@ -22,11 +22,11 @@ define('C_DB_CHAR', 'utf8');
 
 if(USE_DB){
   require_once( MODEL . 'database.php' );
-  require_once( ROOT . 'crud/application/functions/log.php' );
+  require_once( CRUD_ROOT . 'crud/application/functions/log.php' );
 }
 require_once( MODEL . 'tiposModel.php' );
-require_once( ROOT . 'crud/formModel.php' );
-require_once( ROOT . 'crud/crudModel.php' );
+require_once( CRUD_ROOT . 'crud/formModel.php' );
+require_once( CRUD_ROOT . 'crud/crudModel.php' );
 
 
 if(CRUD_DEBUG){
