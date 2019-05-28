@@ -196,13 +196,13 @@ Class Crud extends Conectar {
 
                         	});
 
-													$("body").on( "change" , "input[type=checkbox]" , function(){
-																if( $(this).is(":checked") )
-																				$(this).attr( "value" , "1" );
-																else
-																				$(this).attr( "value" , "0" );
+							$("body").on( "change" , "input[type=checkbox]" , function(){
+										if( $(this).is(":checked") )
+														$(this).attr( "value" , "1" );
+										else
+														$(this).attr( "value" , "0" );
 
-													});
+							});
 
                         	$("body").on( "click" , ".btn_del" , function(){
 
@@ -211,15 +211,13 @@ Class Crud extends Conectar {
                         	});
 
 
-
-
-													$("body").on( "click" , ".btn_edit" , function(){
-																	fnAjaxCompletarFormulario($(this).attr("idprod"));
-						              });
+							$("body").on( "click" , ".btn_edit" , function(){									
+										fnAjaxCompletarFormulario($(this).attr("idprod"));
+				            });
 
                         	$("#btnAdd").on("click" , function(){
 
-															MostrarPanel("add");
+										MostrarPanel("add");
 
                         	});
 
@@ -266,16 +264,16 @@ Class Crud extends Conectar {
               var MostrarPanel = function( mode ){
 
                         	if( mode =="add"){
-															fnResetForm();
-															$("#modal_mode").val("add");
+									fnResetForm();
+									$("#modal_mode").val("add");
                         			$("#panel_titulo").text("Nuevo Item");
                         	}
                         	else{
-															$("#panel_titulo").text("Edicion de Item");
-															$("#modal_mode").val("edit");
+									$("#panel_titulo").text("Edicion de Item");
+									$("#modal_mode").val("edit");
                         	}
 
-													$("#panel_'.$this->tabla.'").modal("show");
+							$("#panel_'.$this->tabla.'").modal("show");
               };
 
 						var fnResetForm = function(){
@@ -403,7 +401,7 @@ Class Crud extends Conectar {
 							   data: { datos: jsonStr },
 							   type: "POST",
 								 cache: false,
-							   success: function(response) {
+							   success: function(response) {													
 													$("#div_modal").html(response);
 													MostrarPanel("edit");
 							   }
@@ -470,19 +468,19 @@ Class Crud extends Conectar {
 																</div>
 											</div>';
 		return  '<div class="clearfix"></div>
-				<div class="row" name="tabla_div" id="tabla_div">
-					<div class="panel panel-default"><!-- PANEL -->
-						<div class="panel-heading">
-							<h2>'.$this->titulo.'</h2>
-							<button type="button" class="btn btn-primary" name="btnAdd" id="btnAdd" title="Agregar item" ><span class="glyphicon glyphicon-plus" aria-hidden="true"> Nuevo</span>
+				<div  name="tabla_div" id="tabla_div">
+					<div class="card"><!-- CARD -->
+						<div class="card-header">
+							<h2 class="card-title">'.$this->titulo.'</h2>
+							<button type="button" class="btn btn-primary" name="btnAdd" id="btnAdd" title="Agregar item" ><i class="fa fa-file"></i> Nuevo
 		 					</button>
 						</div>
-						<div class="panel-body">' .
+						<div class="card-body">' .
 							'<div name="div_tabla" id="div_tabla"><!-- DIV_TABLA -->
 								' .	self::getTabla() .
 							'</div><!-- END DIV_TABLA -->' .
 					'	</div>
-					</div><!-- END PANEL -->' .
+					</div><!-- END CARD -->' .
 					'<div id="div_modal"><!-- DIV_MODAL -->' .
 						    	self::getModal() .
 				    '</div><!-- END DIV_MODAL -->
@@ -504,7 +502,7 @@ Class Crud extends Conectar {
 			$col = 0;
 
 			//thead
-			$tabla = '<div class="table-responsive"><!-- DIV TABLE_RESPONSIVE -->
+			$tabla = '<div class="content"><!-- DIV TABLE_RESPONSIVE -->
 					   		<table class="table table-striped table-hover table-bordered"><thead class="thead-dark"><tr>';
 			foreach ( $this->campos_array as $id => $row )
 					if( $row["listar"] ){  //mostrar en listado?
@@ -524,11 +522,11 @@ Class Crud extends Conectar {
  						$tabla .= '<td>'.$this->u[$i][$j].'</td>';
  				$tabla .= '<td>
 
- 						   			<button type="button" class="btn btn-primary btn_edit" name="btnEdit" idprod="'.$this->u[$i][0].'" title="Editar item"  ><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+ 						   			<button type="button" class="btn btn-primary btn_edit" name="btnEdit" idprod="'.$this->u[$i][0].'" title="Editar item"  ><i class="fa fa-edit"></i>
  						   			</button>
 
  						   ';
- 				$tabla .=($this->eliminar)? '<button type="button" class="btn btn-danger  btn_del" name="btnDel"  idprod="'.$this->u[$i][0].'" title="Eliminar item" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+ 				$tabla .=($this->eliminar)? '<button type="button" class="btn btn-danger  btn_del" name="btnDel"  idprod="'.$this->u[$i][0].'" title="Eliminar item" ><i class="fa fa-eraser"></i>
  						   			</button> ' : '';
  				$tabla .= '		</td>
  						   </tr>';

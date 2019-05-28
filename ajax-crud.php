@@ -1,6 +1,6 @@
 <?php
 
-require_once( 'crud/config.php' );  // ACA SE DEBE MODIFICAR POR LA RUTA EN EL PROJECTO  DONDE SE USA
+require_once( 'config.php' );  // ACA SE DEBE MODIFICAR POR LA RUTA EN EL PROJECTO  DONDE SE USA
 
 
 if($_GET){

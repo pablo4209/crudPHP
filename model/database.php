@@ -29,7 +29,7 @@ class Conectar
 
             }
             catch (PDOException $e) {
-                write_log( "Error estableciendo conexion: " , $e->getMessage() );
+                if(CRUD_LOG)write_log( "Error estableciendo conexion: " , $e->getMessage() );
                 print '<div class="alert alert-danger" role="alert">Mensaje:  '. $e->getMessage() . '</div>';
                 //die();
             }
@@ -67,7 +67,7 @@ class Conectar
           return $this->p;
 
         }catch(PDOException $e) {
-                write_log( "database::getRows() :" , $e->getMessage() );
+                if(CRUD_LOG)write_log( "database::getRows() :" , $e->getMessage() );
                 return null;
                 //die();
         }
@@ -90,7 +90,7 @@ class Conectar
               $sql = htmlspecialchars( $r );
               $info = '<div class="row"><div class="col-md-10"><div class="alert alert-danger" role="alert">'.$sql.'</div></div></div>';
             }
-            if($sql != "") write_log( "Valores CRUD_DEBUG: " , $sql );
+            if($sql != "" AND CRUD_LOG ) write_log( "Valores CRUD_DEBUG: " , $sql );
 
             if( !empty($_POST) )
                     $info .= '<div class="row"><div class="col-md-10"><div class="alert alert-warning" role="alert">'.var_export( $_POST , true ).'</div></div></div>';
@@ -154,7 +154,7 @@ class Conectar
             return $this->p;
 
         }catch(PDOException $e) {
-                write_log( "database::getRowId: " , $e->getMessage() );
+                if(CRUD_LOG)write_log( "database::getRowId: " , $e->getMessage() );
                 return null;
                 //die();
         }
@@ -175,7 +175,7 @@ class Conectar
             else
                 return false;
         }catch(PDOException $e) {
-                write_log( "Error en exePrepare: " , $e->getMessage() );
+                if(CRUD_LOG)write_log( "Error en exePrepare: " , $e->getMessage() );
                 return false;
         }
     }
@@ -201,7 +201,7 @@ class Conectar
                 return false;
             }
         }catch(PDOException $e) {
-                write_log( "Error en exePrepare_FetchAssoc: " , $e->getMessage() );
+                if(CRUD_LOG)write_log( "Error en exePrepare_FetchAssoc: " , $e->getMessage() );
                 return false;
         }
 

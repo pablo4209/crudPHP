@@ -22,6 +22,7 @@ if( isset($_POST['datos'])  ){
 							   $datos[0]["idprod"]
 						 ); //se pasan datos de tabla al constructor
 			
+			
 			echo $crud->getModal();
 	}
 }

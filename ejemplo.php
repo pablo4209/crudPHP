@@ -1,6 +1,7 @@
 <?php
+	
+	require_once( 'config.php' );
 
-	require_once( 'crud/config.php' );
 
 										//$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
 	$selectEntidad = [ "tabla" => "tbentidad",
@@ -73,11 +74,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<title>Ejemplo clase CRUD</title>
-	<link rel="stylesheet" href="http://localhost/crudPHP/js/bootstrap/css/bootstrap.min.css" >
-	<script type="text/javascript" src="http://localhost/crudPHP/js/jquery-3.3.1.min.js"></script>
-	<script src="http://localhost/crudPHP/js/bootstrap//js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="http://localhost/crudPHP/js/validate/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="http://localhost/crudPHP/js/validate/validar.js"></script>
+	<link rel="stylesheet" href="http://localhost/crudPHP/ejemplos/fontawesome/css/all.min.css" >
+	<link rel="stylesheet" href="http://localhost/crudPHP/ejemplos/bootstrap/css/bootstrap.min.css" >
+	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/js/jquery-3.3.1.min.js"></script>
+	<script src="http://localhost/crudPHP/ejemplos/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/validar.js"></script>
 
 </head>
 <body>
