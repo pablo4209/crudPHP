@@ -1,0 +1,19 @@
+
+REQUISITOS
+-----------------------
+boostrap 4
+iconos con fontawesome
+jquery (desarrollado con 3.3.1)
+jquery validate 
+
+
+COMO USAR
+-----------------
+editar config.php:
+- ingresar los parametros de conexion de base de datos
+- configurar en CRUD_ROOT las subcarpetas donde se encuentra el crud de la siguiente manera:
+	
+	define( "CRUD_ROOT" , "" ); // ACA INDICAR RUTA AL DIRECTORIO PRINCIPAL DEL CRUD EN EL PROYECTO DONDE SE USA
+								// ejemplo: si el directorio del crud esta con respecto a la raiz en "SUBDIR1/CRUD"
+								// 		entonces configuro "SUBDIR1/"
+

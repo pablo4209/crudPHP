@@ -1,6 +1,6 @@
 <?php
-
-require_once( 'config.php' );  // ACA SE DEBE MODIFICAR POR LA RUTA EN EL PROJECTO  DONDE SE USA
+define( "SET_AJAX" , 1 );
+require_once( 'config.php' );
 
 
 if($_GET){

@@ -173,7 +173,7 @@ class Formulario extends Conectar {
 																			<input type="checkbox" '.
 																			$valorDefault .
 																			'id="'.$row["campo"]
-																			.'" class="crudControl" name="'.$row["campo"] . '" '. $check . $valor . $disabled .' >'
+																			.'" class="crudControl" name="'.$row["campo"] . '" '. $check . $valor . $disabled .' > '
 																			.$alias.'
 																		</label>
 																	</div>

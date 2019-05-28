@@ -15,7 +15,7 @@ if( isset( $_POST["datos"] )  ){
 
 	if( $datos[0]["crud-list"] == 1 ){
 
-		require_once( 'crud/crudModel.php' );
+		require_once( 'application/crudModel.php' );
 
 		$crud = new Crud ( $datos[0]["tabla_bd"] ,
 						   				 $datos[1],

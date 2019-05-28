@@ -1,6 +1,6 @@
 <?php
 	
-	require_once( 'config.php' );
+	require_once( 'CRUD/config.php' );
 
 
 										//$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
