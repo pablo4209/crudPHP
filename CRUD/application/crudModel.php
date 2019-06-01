@@ -10,7 +10,7 @@
 *
 *	$c = new Crud( 	nombre_tabla,		//string con el nombre de la tabla
 *					campos,									// array clave => valor con la configuracion de campos
-*			   "idtabla = 2"						//tambien se pueden aplicar un filtro simple a los resultados de la tabla
+*			   "WHERE idtabla = 2"						//tambien se pueden aplicar un filtro simple a los resultados de la tabla, escribir WHERE completo o filtro ORDER BY
 *				);
 *
 * 	Parametro campos
@@ -41,7 +41,8 @@
 *    $param: es un array asociativo: "tabla"=>, "id"=> y "descripcion"=> son los parametros obligatorios, deben
 *    				 coincidir con su respectivo dato en la bd.*
 *    tabla: nombre de la tabla
-*    id: el select toma el name e id con este valor, el valor del campo id es el value del select
+*	 nombre_control: el select toma el name e id html con este valor, si no existe se toma el id
+*    id: el valor del campo id es el value los options del select
 *    descripcion: el campo descripcion de la Tabla
 *    sel: id seleccionado por defecto
 *    descripcion2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
@@ -492,7 +493,7 @@ Class Crud extends Conectar {
 
 		$sql = "SELECT " . $this->campos_sql . " FROM " . $this->tabla;
 
-		if( $this->where != "" ) $sql .= " WHERE " . $this->where;
+		if( $this->where != "" ) $sql .= " " . $this->where;
 
 		$this->u = parent::getRows( $sql );
 

@@ -228,7 +228,8 @@ class Conectar
     /**
     *    $param: es un array asociativo: tabla, id y descripcion son los parametros obligatorios.
     *    tabla: nombre de la tabla
-    *    id: el select toma el name e id con este valor, el valor del campo id es el value del select   *
+    *    nombre_control: name e id html del control, si no se recibe se establece el nombre del campo id
+    *    id: el valor del campo id es el value de cada option del select 
     *    descripcion: el campo descripcion de la Tabla
     *    sel: id seleccionado por defecto
     *    descripcion2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
@@ -238,8 +239,9 @@ class Conectar
     */
     protected function crearSelectTabla( $param ) //$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
     {
-      $tabla = (isset($param["tabla"]))? $param["tabla"] : false;
+      $tabla = (isset($param["tabla"]))? $param["tabla"] : false;      
       $id = (!empty($param["id"]))? $param["id"] : false;
+      $name = (!empty($param["nombre_control"]))? $param["nombre_control"] : $id ;
       $desc = (isset($param["descripcion"]))? $param["descripcion"] : false;
       $sel = (!empty($param["sel"]))? $param["sel"] : 0;
       $desc2= (isset($param["descripcion2"]))? $param["descripcion2"] : "";
@@ -264,7 +266,7 @@ class Conectar
         if($datos)
         {
             //dias
-            $f.= '<select name="'.$id.'" id="'.$id.'" '.$prop.$min.' title="'.$toolTip.'" class="form-control '.$requerido.$cssClass.'" '.$disabled.'>
+            $f.= '<select name="'.$name.'" id="'.$name.'" '.$prop.$min.' title="'.$toolTip.'" class="form-control '.$requerido.$cssClass.'" '.$disabled.'>
                     <option value="0" ';
             if ($sel==0) $f.='selected="selected"';
             $f.= '>Seleccionar</option>';

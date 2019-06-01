@@ -50,7 +50,7 @@
 															"maxlenght" => 10	,
 													 	   "placehlder" => "ingresa un simbolo"
 												],
-												[ 			"campo"	=>	"idEntidad"  ,
+												[ 			"campo"	=>	"id_usuario"  ,
 																"tipo"	=> tipoDato::T_SELECT ,
 																"alias"	=>	"Modificado por",
 															"listar"	=>	0 ,

@@ -193,6 +193,8 @@ class Formulario extends Conectar {
 																			$row["value"] += [ "disabled" => $disabled ];
                                                     if( empty($row["value"]["requerido"]) )
                                                                             $row["value"] += [ "requerido" => $row["requerido"] ];
+                                                    if( empty($row["value"]["nombre_control"]))
+                                                                            $row["value"] += [ "nombre_control" => $row["campo"] ]; //el nombre del select puede ser distinto del id de la tabla que esta mostrando
 													$control = '
 																			<div class="form-group validar" >
 																					<label for="'.$row["campo"].'">'.$alias.$asterisco.'</label>
