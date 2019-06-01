@@ -239,15 +239,17 @@ class Conectar
     protected function crearSelectTabla( $param ) //$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
     {
       $tabla = (isset($param["tabla"]))? $param["tabla"] : false;
-      $id = (isset($param["id"]))? $param["id"] : false;
+      $id = (!empty($param["id"]))? $param["id"] : false;
       $desc = (isset($param["descripcion"]))? $param["descripcion"] : false;
-      $sel = (isset($param["sel"]))? $param["sel"] : "" ;
+      $sel = (!empty($param["sel"]))? $param["sel"] : 0;
       $desc2= (isset($param["descripcion2"]))? $param["descripcion2"] : "";
       $where = (isset($param["where"]))? $param["where"] : "";
-      $cssClass= (isset($param["cssClass"]))? $param["cssClass"] : " input-medium required";
+      $cssClass= (isset($param["cssClass"]))? $param["cssClass"] : " input-medium ";
+      $requerido = (!empty($param["requerido"]))? " required " : "";
       $toolTip = (isset($param["toolTip"]))? $param["toolTip"] : "Debes seleccionar un elemento.";
       $prop = (isset($param["prop"]))? $param["prop"] : "";
       $disabled = (isset($param["disabled"]))? $param["disabled"] : "";
+      $min = (!empty($param["min"]))? ' min='.$param["min"].' ' : "";
 
         $f=""; //se inicializan para evitar warnings
   		if(empty($tabla) or empty($id) or empty($desc))
@@ -262,9 +264,9 @@ class Conectar
         if($datos)
         {
             //dias
-            $f.= '<select name="'.$id.'" id="'.$id.'" '.$prop.' min="1" title="'.$toolTip.'" class="form-control '.$cssClass.'" '.$disabled.'>
+            $f.= '<select name="'.$id.'" id="'.$id.'" '.$prop.$min.' title="'.$toolTip.'" class="form-control '.$requerido.$cssClass.'" '.$disabled.'>
                     <option value="0" ';
-            if ($sel=="") $f.='selected="selected"';
+            if ($sel==0) $f.='selected="selected"';
             $f.= '>Seleccionar</option>';
 		    $cant = sizeof($datos);
 			   for($i=0;$i<$cant;$i++)

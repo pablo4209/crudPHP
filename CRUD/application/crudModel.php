@@ -64,13 +64,13 @@ Class Crud extends Conectar {
 
 	function __construct( $tabla , $campos , $where = "" , $edit_id = 0 ){
 
-				parent::__construct();
+		parent::__construct();
         $this->u=array();
         $this->campos_array = $campos;
         $this->tabla = $tabla;
-				$this->where = $where;
-				self::setRequeridos();
-				self::listar_campos_sql();
+		$this->where = $where;
+		self::setRequeridos();
+		self::listar_campos_sql();
         $this->titulo = "Listado de tabla: " . $tabla;
         $this->eliminar = false;
         $this->edit_id = $edit_id;

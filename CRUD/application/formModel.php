@@ -86,8 +86,8 @@ class Formulario extends Conectar {
                         $type = tipoDato::getType($row["tipo"]); //la funcion retorna el texto indicado
                         $disabled = ( !empty($row["editar"]) && $id != 0 )? '' : ' disabled'; //nunca editar id
                         $cls_editable = '';
-												$alias = ( !empty($row["alias"]) )?	$row["alias"] : $row["campo"];
-												$requerido = ( !empty($row["requerido"]) )? ' required':'' ;
+						$alias = ( !empty($row["alias"]) )?	$row["alias"] : $row["campo"];
+						$requerido = ( !empty($row["requerido"]) )? ' required':'' ;
                         $asterisco = ( !empty($row["requerido"]) )? ' (*)' : '';
                         $minlength = ( !empty($row["minlenght"]) )? ' minlength="'.$row["minlenght"].'"' : '';
                         $maxlength = ( !empty($row["maxlenght"]) )? ' maxlength="'.$row["maxlenght"].'"' : '';
@@ -184,13 +184,15 @@ class Formulario extends Conectar {
 										if( is_array($row["value"]) ){
 
 													if( !isset($row["value"]["sel"]) ) //si no existe se agrega
-																		$row["value"] += [ "sel" => "" ];
+																		$row["value"] += [ "sel" => 0 ];
 													if( !isset($row["value"]["valdefault"]) ) //si no existe se agrega
 																		$row["value"] += [ "prop" => ' valdefault="'.$row["value"]["sel"].'" ' ];
-													if( isset($dato[0][$row["campo"]]) && $dato[0][$row["campo"]] > 0 ) //aca se carga valor si esta seteado $dato
+													if( isset($dato[0][$row["campo"]]) && $dato[0][$row["campo"]] >= 0 ) //aca se carga valor si esta seteado $dato
 																		$row["value"]["sel"] = $dato[0][$row["campo"]];
 													if( !isset($row["value"]["disabled"]) )
 																			$row["value"] += [ "disabled" => $disabled ];
+                                                    if( empty($row["value"]["requerido"]) )
+                                                                            $row["value"] += [ "requerido" => $row["requerido"] ];
 													$control = '
 																			<div class="form-group validar" >
 																					<label for="'.$row["campo"].'">'.$alias.$asterisco.'</label>

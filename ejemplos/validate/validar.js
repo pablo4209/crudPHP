@@ -54,8 +54,7 @@ $(function(){
                 submitHandler: function(form) {
                     $(form).ajaxSubmit();
                 }
-
-
+                
     });
 
 
