@@ -87,7 +87,7 @@ class Formulario extends Conectar {
                         $disabled = ( !empty($row["editar"]) && $id != 0 )? '' : ' disabled'; //nunca editar id
                         $cls_editable = '';
 						$alias = ( !empty($row["alias"]) )?	$row["alias"] : $row["campo"];
-						$requerido = ( !empty($row["requerido"]) )? ' required':'' ;
+						$requerido = ( !empty($row["requerido"]) )? ' required ':'' ;
                         $asterisco = ( !empty($row["requerido"]) )? ' (*)' : '';
                         $minlength = ( !empty($row["minlenght"]) )? ' minlength="'.$row["minlenght"].'"' : '';
                         $maxlength = ( !empty($row["maxlenght"]) )? ' maxlength="'.$row["maxlenght"].'"' : '';
@@ -136,11 +136,12 @@ class Formulario extends Conectar {
                                          .' type="'.$type.'" class="form-control input-medium crudControl'
                                          .$cls_editable
                                          .$extraclass
-                                         .$requerido.'" '
+                                         .'" '
                                          .$place
                                          . $valor
 										 . $valorDefault
                                          . $disabled
+                                         . $requerido
                                          .' >
                                     </div>';
 										break;
@@ -192,7 +193,7 @@ class Formulario extends Conectar {
 													if( !isset($row["value"]["disabled"]) )
 																			$row["value"] += [ "disabled" => $disabled ];
                                                     if( empty($row["value"]["requerido"]) )
-                                                                            $row["value"] += [ "requerido" => $row["requerido"] ];
+                                                                            $row["value"] += [ "requerido" => (( !empty($row["requerido"]) )? $row["requerido"] : 0 ) ];
                                                     if( empty($row["value"]["nombre_control"]))
                                                                             $row["value"] += [ "nombre_control" => $row["campo"] ]; //el nombre del select puede ser distinto del id de la tabla que esta mostrando
 													$control = '

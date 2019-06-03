@@ -1,5 +1,6 @@
- $(document).ready(function(){
+ $(function(){
 
+    var script_hola = function(){ alert("hola!!!!");};
    
     //clases propias de validacion
     jQuery.validator.addClassRules({

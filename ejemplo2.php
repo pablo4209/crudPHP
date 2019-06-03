@@ -3,11 +3,10 @@
 	require_once( 'CRUD/config.php' );
 
 										//$tabla, $id, $desc, $sel="", $desc2="", $where = "", $cssClass=" input-medium required", $toolTip = "Debes seleccionar un elemento." )
-	$selectEntidad = [ "tabla" => "tbentidad",
-											"id" => "idEntidad",
-											"descripcion" => "Nombre",
-											"requerido" => 0,
-											"sel" => "1" 	];
+	$selectEntidad = [ 		"tabla" => "tbentidad",
+								"id" => "idEntidad",
+						"descripcion" => "Nombre"
+					];
 
 	//Crud( nom_tabla, array(array( nom_campo, tipo_dato , alias , listar , editar , requerido, value, type, minlenght, maxlenght, placeholder , extraclass  )) )
 	$crud = new Crud ( "tbmoneda",
@@ -45,17 +44,17 @@
 														 	  "alias"	=> 	"simbolo" 				,
 															   "listar" => 0 ,
 															   "editar" => 1 ,
-															"requerido" =>	 0,
+															"requerido" =>	 1,
 															"minlenght" => 1,
 															"maxlenght" => 10	,
 													 	   "placehlder" => "ingresa un simbolo"
 												],
-												[ 			"campo"	=>	"id_usuario"  ,
+												[ 			"campo"	=>	"idEntidad"  ,
 																"tipo"	=> tipoDato::T_SELECT ,
 																"alias"	=>	"Modificado por",
 															"listar"	=>	0 ,
 															"editar"	=>	1 ,
-															"requerido"	=>	0,
+															"requerido"	=>	1 ,
 																"value"	=>	$selectEntidad
 												],
 												[ 			"campo"	=>	"Habilitada" ,
@@ -89,8 +88,10 @@
 	<link rel="stylesheet" href="http://localhost/crudPHP/ejemplos/bootstrap/css/bootstrap.min.css" >
 	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/js/jquery-3.3.1.min.js"></script>
 	<script src="http://localhost/crudPHP/ejemplos/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/validar.js"></script>
+	<!--<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/validar.js"></script> -->
+	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/jquery.validate.js"></script>
+	
+	
 
 </head>
 <body>

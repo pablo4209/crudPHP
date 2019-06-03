@@ -23,7 +23,7 @@ else
 define( "CRUD_FOLDER" , "CRUD/" ); 
 define ( "MODEL" , CRUD_ROOT . CRUD_FOLDER . "model/" );
 define ( "CRUD_AJAX" ,  CRUD_ROOT . CRUD_FOLDER . "application/ajax/" );
-
+define( "CRUD_PATH_JS" , CRUD_ROOT. "js/" );
 
 //constantes de conexion
 define('C_DB_HOST', '127.0.0.1');

@@ -181,11 +181,11 @@ Class Crud extends Conectar {
         			<script type="text/javascript">
 
 
-                        $(document).ready(function(){
+                        $(document).ready(function(){                        	
 
-                        	$.getScript("js/validate/validar.js"); // add script
-
-
+                        	$.getScript("'.CRUD_PATH_JS.'validar.js"); // add script
+                        	script_hola();
+                        	
                         	$("body").on( "click" , "#guardar" , function(){
 	                        		if( $("#form_'.$this->tabla.'").valid() == true ){
 	                        			if( $("#modal_mode").val() == "add" ){
@@ -279,7 +279,7 @@ Class Crud extends Conectar {
 
 						var fnResetForm = function(){
 									$(".crudControl").each(function(){
-											$(this).parent().removeClass("has-error has-success");
+											$(this).parent().removeClass("is-valid is-invalid");
 
 											if( $(this).is("input[type=text] , input[type=number] , input[type=hidden]") ){
 													$(this).val( $(this).attr("valdefault") );
@@ -299,7 +299,9 @@ Class Crud extends Conectar {
 
 
 									});
-									$("#form_'.$this->tabla.'").validate().resetForm();
+																									
+									
+								    $("#form_'.$this->tabla.'").resetForm();
 						};
 
 						var fnAjaxEliminarItem = function(idprod){
@@ -405,6 +407,7 @@ Class Crud extends Conectar {
 							   success: function(response) {													
 													$("#div_modal").html(response);
 													MostrarPanel("edit");
+													configura_validar();
 							   }
 							});
                         };
@@ -504,7 +507,7 @@ Class Crud extends Conectar {
 
 			//thead
 			$tabla = '<div class="content"><!-- DIV TABLE_RESPONSIVE -->
-					   		<table class="table table-striped table-hover table-bordered"><thead class="thead-dark"><tr>';
+					   		<table class="table table-sm table-striped table-hover table-bordered"><thead class="thead-dark"><tr>';
 			foreach ( $this->campos_array as $id => $row )
 					if( $row["listar"] ){  //mostrar en listado?
 						$col++;

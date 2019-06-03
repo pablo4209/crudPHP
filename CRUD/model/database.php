@@ -247,7 +247,7 @@ class Conectar
       $desc2= (isset($param["descripcion2"]))? $param["descripcion2"] : "";
       $where = (isset($param["where"]))? $param["where"] : "";
       $cssClass= (isset($param["cssClass"]))? $param["cssClass"] : " input-medium ";
-      $requerido = (!empty($param["requerido"]))? " required " : "";
+      $requerido = (!empty($param["requerido"]))? ' required min="1" ' : "";
       $toolTip = (isset($param["toolTip"]))? $param["toolTip"] : "Debes seleccionar un elemento.";
       $prop = (isset($param["prop"]))? $param["prop"] : "";
       $disabled = (isset($param["disabled"]))? $param["disabled"] : "";
@@ -266,7 +266,7 @@ class Conectar
         if($datos)
         {
             //dias
-            $f.= '<select name="'.$name.'" id="'.$name.'" '.$prop.$min.' title="'.$toolTip.'" class="form-control '.$requerido.$cssClass.'" '.$disabled.'>
+            $f.= '<select name="'.$name.'" id="'.$name.'" '.$prop.$min.' title="'.$toolTip.'" class="form-control '.$cssClass.'" '.$disabled.$requerido.'>
                     <option value="0" ';
             if ($sel==0) $f.='selected="selected"';
             $f.= '>Seleccionar</option>';
