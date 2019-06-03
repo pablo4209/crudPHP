@@ -87,8 +87,7 @@
 	<link rel="stylesheet" href="http://localhost/crudPHP/ejemplos/fontawesome/css/all.min.css" >
 	<link rel="stylesheet" href="http://localhost/crudPHP/ejemplos/bootstrap/css/bootstrap.min.css" >
 	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/js/jquery-3.3.1.min.js"></script>
-	<script src="http://localhost/crudPHP/ejemplos/bootstrap/js/bootstrap.min.js"></script>
-	<!--<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/validar.js"></script> -->
+	<script src="http://localhost/crudPHP/ejemplos/bootstrap/js/bootstrap.min.js"></script>	
 	<script type="text/javascript" src="http://localhost/crudPHP/ejemplos/validate/jquery.validate.js"></script>
 	
 	

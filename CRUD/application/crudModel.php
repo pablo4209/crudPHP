@@ -183,9 +183,6 @@ Class Crud extends Conectar {
 
                         $(document).ready(function(){                        	
 
-                        	$.getScript("'.CRUD_PATH_JS.'validar.js"); // add script
-                        	script_hola();
-                        	
                         	$("body").on( "click" , "#guardar" , function(){
 	                        		if( $("#form_'.$this->tabla.'").valid() == true ){
 	                        			if( $("#modal_mode").val() == "add" ){
@@ -224,6 +221,10 @@ Class Crud extends Conectar {
 
 
                         });  //document ready
+
+            var configurar_validar = function(){ 
+                        $.getScript("'.CRUD_PATH_JS.'validar.js"); // add script
+             		};
 
             var guardarEdit = function(){
 
@@ -273,7 +274,7 @@ Class Crud extends Conectar {
 									$("#panel_titulo").text("Edicion de Item");
 									$("#modal_mode").val("edit");
                         	}
-
+                        	configurar_validar();
 							$("#panel_'.$this->tabla.'").modal("show");
               };
 
@@ -407,7 +408,7 @@ Class Crud extends Conectar {
 							   success: function(response) {													
 													$("#div_modal").html(response);
 													MostrarPanel("edit");
-													configura_validar();
+													
 							   }
 							});
                         };
