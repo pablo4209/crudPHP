@@ -1,57 +1,8 @@
 <?php
 /**
-*	modo de iniciar la clase
-*	-------------------------
-*	IMPORTANTE!
-*	el indice de la tabla siempre debe ser el primer campo, porque asi se asume en la clase,
-*	sin importar si se visualiza o no
-*	- el campo indice siempre se mostrara disabled
-*	--------------
 *
-*	$c = new Crud( 	nombre_tabla,		//string con el nombre de la tabla
-*					campos,									// array clave => valor con la configuracion de campos
-*			   "WHERE idtabla = 2"						//tambien se pueden aplicar un filtro simple a los resultados de la tabla, escribir WHERE completo o filtro ORDER BY
-*				);
-*
-* 	Parametro campos
-* 	----------------------------------------------
-* 	Recibe un array asociativo de tipo ["clave" => "valor"]
-* 	(campos obligatorios: campo, tipo)
-* 				[
-*										[ 		"campo" 	=> 	"nombre_campo" ,    //nombre del campo
-*													"tipo"		=> 	"tipo_dato" (constante) , 	//constante con el tipo del campo (ej: T_HIDDEN, input oculto)
-*													"alias"		=> 	"alias" , 			//nombre a mostrar, si "" se usa nombre_tabla
-*													"listar" 	=>	0 ,  	//boolean, si se muestra en el listado
-*													"editar"	=>	0 ,		//boolean, si se edita en form
-*													"requerido"	=>	1	,			//boolean, requerido en caso de usarse en form
-*													"value"		=>	"" ,	//string o en campo select ver documentacion
-*													"type"		=>	"text"	,	//son los tipo para input
-*													"minlenght"	=> 20	,	//numero
-*													"maxlenght"	=> 50	,	//numero
-*													"placeholder" => "frase para control vacio",
-*													"extraclass"	=>	""	//clases extra!
-*										]
-*					]
-*
-*		value cuando tipo_dato = tipoDato::T_SELECT
-* 	-----------------------------------------------
-* 	para que se muestre este control, debe recibir un array asociativo para la siguiente funcion:
-*		parent::crearSelectTabla($param)
-*
-*    $param: es un array asociativo: "tabla"=>, "id"=> y "descripcion"=> son los parametros obligatorios, deben
-*    				 coincidir con su respectivo dato en la bd.*
-*    tabla: nombre de la tabla
-*	 nombre_control: el select toma el name e id html con este valor, si no existe se toma el id
-*    id: el valor del campo id es el value los options del select
-*    descripcion: el campo descripcion de la Tabla
-*    sel: id seleccionado por defecto
-*    descripcion2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
-*    where: filtro de la $consulta
-*    cssClass: tiene las clases de control bootstrap por defecto y lo tilda como requerido para validate, cambiar el valor reemplaza el default
-*    prop: sirve para agregar propiedades al control para ser manipuladas desde js
 *
 */
-
 
 Class Crud extends Conectar {
 	private $campos_array; 		//array de arrays con toda la configuracion de los campos
@@ -173,54 +124,54 @@ Class Crud extends Conectar {
 
 						}
 
-        //fnAjaxRenderTabla::: envia todo por JSON, un array de dos objetos, uno contiene todas las propiedades
+        //ajax_render_table::: envia todo por JSON, un array de dos objetos, uno contiene todas las propiedades
 	    //que se necesiten, el otro array envia el array de configuracion de campos del CRUD.
 		//$datos[0] : contiene nombre de tabla, crud-list y cualquier otra propiedad de control que quiera usar
 		//$datos[1] : contiene los campos del crud
         $script =   '
-        			<script type="text/javascript">
+		<script type="text/javascript">
 
 
-                        $(document).ready(function(){                        	
+            $(document).ready(function(){                        	
 
-                        	$("body").on( "click" , "#guardar" , function(){
-	                        		if( $("#form_'.$this->tabla.'").valid() == true ){
-	                        			if( $("#modal_mode").val() == "add" ){
-																			fnAjaxAdd();
-	                        			}else{
-																			guardarEdit();
-	                        			}
-	                        		}
+            	$("body").on( "click" , "#guardar" , function(){
+                		if( $("#form_'.$this->tabla.'").valid() == true ){
+                			if( $("#modal_mode").val() == "add" ){
+																ajax_add();
+                			}else{
+																guardarEdit();
+                			}
+                		}
 
-                        	});
+            	});
 
-							$("body").on( "change" , "input[type=checkbox]" , function(){
-										if( $(this).is(":checked") )
-														$(this).attr( "value" , "1" );
-										else
-														$(this).attr( "value" , "0" );
+				$("body").on( "change" , "input[type=checkbox]" , function(){
+							if( $(this).is(":checked") )
+											$(this).attr( "value" , "1" );
+							else
+											$(this).attr( "value" , "0" );
 
-							});
+				});
 
-                        	$("body").on( "click" , ".btn_del" , function(){
+            	$("body").on( "click" , ".btn_del" , function(){
 
-                        		if( confirm("Queres eliminar el item: " + $(this).attr("idprod") + "?" ) )
-                        						fnAjaxEliminarItem( $(this).attr("idprod") );
-                        	});
-
-
-							$("body").on( "click" , ".btn_edit" , function(){									
-										fnAjaxCompletarFormulario($(this).attr("idprod"));
-				            });
-
-                        	$("#btnAdd").on("click" , function(){
-
-										MostrarPanel("add");
-
-                        	});
+            		if( confirm("Queres eliminar el item: " + $(this).attr("idprod") + "?" ) )
+            						ajax_delete_item( $(this).attr("idprod") );
+            	});
 
 
-                        });  //document ready
+				$("body").on( "click" , ".btn_edit" , function(){									
+							ajax_complete_form($(this).attr("idprod"));
+	            });
+
+            	$("#btnAdd").on("click" , function(){
+
+							show_modal_panel("add");
+
+            	});
+
+
+            });  //document ready
 
             var configurar_validar = function(){ 
                         $.getScript("'.CRUD_PATH_JS.'validar.js"); // add script
@@ -230,13 +181,91 @@ Class Crud extends Conectar {
 
             	var formData = new FormData();
 
-							formData.append( "crud-edit" , 1 );
-							formData.append( "tabla_bd" , $("#tabla_bd").val() );
-							formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" ); //envio el nombre del campo_id para identificarlo
-							'.$form_datos.'
+				formData.append( "crud-edit" , 1 );
+				formData.append( "tabla_bd" , $("#tabla_bd").val() );
+				formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" ); //envio el nombre del campo_id para identificarlo
+				'.$form_datos.'
 
-							$.ajax({
-								url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-edit",
+				$.ajax({
+					url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-edit",
+					type: "POST",
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					//mientras enviamos el archivo
+					beforeSend: function(){
+						//$("#cargando").show();
+					},
+					//una vez finalizado correctamente
+					success: function(data){
+
+						if(parseInt(data) === 1)
+							ajax_render_table();
+						else
+							alert("Error al editar");
+
+					},
+					//si ha ocurrido un error
+					error: function(){
+						//$("#cargando").hide();
+					}
+				});
+
+            };
+
+            var show_modal_panel = function( mode ){
+
+                        	if( mode =="add"){
+									reset_form();
+									$("#modal_mode").val("add");
+                        			$("#panel_titulo").text("Nuevo Item");
+                        	}
+                        	else{
+									$("#panel_titulo").text("Edicion de Item");
+									$("#modal_mode").val("edit");
+                        	}
+                        	configurar_validar();
+							$("#panel_'.$this->tabla.'").modal("show");
+            };
+
+			var reset_form = function(){
+						$(".crudControl").each(function(){
+								$(this).parent().removeClass("is-valid is-invalid");
+
+								if( $(this).is("input[type=text] , input[type=number] , input[type=hidden]") ){
+										$(this).val( $(this).attr("valdefault") );
+								}
+								if( $(this).is("select") ){
+										console.log("seleccionar opcion " + $(this).attr("valdefault"));
+										$(this).val( $(this).attr("valdefault") );
+								}
+								if( $(this).is("input[type=checkbox]") )
+										if( $(this).attr("valdefault") == 1 ){
+														this.checked = true;
+														$(this).attr( "value" , "1" );
+										}else{
+														$(this).attr( "value" , "0" );
+														this.checked = false;
+										}
+
+
+						});																						
+						
+					    $("#form_'.$this->tabla.'").validate().resetForm();
+			};
+
+			var ajax_delete_item = function(idprod){
+
+					var formData = new FormData();
+
+					formData.append( "crud-del" , 1 );
+					formData.append( "tabla_bd" , $("#tabla_bd").val() );
+					formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" );
+					formData.append( "idprod" , idprod );
+
+					$.ajax({
+								url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-del",
 								type: "POST",
 								data: formData,
 								cache: false,
@@ -248,147 +277,68 @@ Class Crud extends Conectar {
 								},
 								//una vez finalizado correctamente
 								success: function(data){
-
-									if(parseInt(data) === 1)
-										fnAjaxRenderTabla();
-									else
-										alert("Error al editar");
-
+									ajax_render_table();
+									alert(data);
 								},
 								//si ha ocurrido un error
 								error: function(){
-									//$("#cargando").hide();
+									alert("Error, no se pudo eliminar.");
 								}
-							});
+					});
 
-                        };
+			};
 
-              var MostrarPanel = function( mode ){
+            var ajax_render_table = function(){
 
-                        	if( mode =="add"){
-									fnResetForm();
-									$("#modal_mode").val("add");
-                        			$("#panel_titulo").text("Nuevo Item");
-                        	}
-                        	else{
-									$("#panel_titulo").text("Edicion de Item");
-									$("#modal_mode").val("edit");
-                        	}
-                        	configurar_validar();
-							$("#panel_'.$this->tabla.'").modal("show");
+					var obj = {};
+					var arreglo = [];
+
+					obj["crud-list"] = "1";
+					obj["tabla_bd"] = "'.$this->tabla.'";
+					obj["tabla_where"] = "'.$this->where.'";
+					obj["setTitulo"] = "'.self::getTitulo().'";
+					obj["setEliminar"] = "'.self::getEliminar().'";
+
+					arreglo.push(obj);
+					arreglo.push( '.json_encode( $this->campos_array , JSON_FORCE_OBJECT ).' );
+
+					jsonStr = JSON.stringify(arreglo);
+
+					$.ajax({
+					   url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-list",
+					   data: { datos: jsonStr },
+					   type: "POST",
+					   success: function(response) {
+					      	$("#panel_'.$this->tabla.'").modal("hide");
+					      	$("#div_tabla").html(response);
+					   }
+					});
               };
 
-						var fnResetForm = function(){
-									$(".crudControl").each(function(){
-											$(this).parent().removeClass("is-valid is-invalid");
+              var ajax_add = function(){
+                	var formData = new FormData();
 
-											if( $(this).is("input[type=text] , input[type=number] , input[type=hidden]") ){
-													$(this).val( $(this).attr("valdefault") );
-											}
-											if( $(this).is("select") ){
-													console.log("seleccionar opcion " + $(this).attr("valdefault"));
-													$(this).val( $(this).attr("valdefault") );
-											}
-											if( $(this).is("input[type=checkbox]") )
-													if( $(this).attr("valdefault") == 1 ){
-																	this.checked = true;
-																	$(this).attr( "value" , "1" );
-													}else{
-																	$(this).attr( "value" , "0" );
-																	this.checked = false;
-													}
+					formData.append( "crud-add" , 1 );
+					formData.append( "tabla_bd" , $("#tabla_bd").val() );
+					formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" ); //envio el nombre del campo_id para identificarlo
+					'.$form_datos.'
 
-
-									});
-																									
-									
-								    $("#form_'.$this->tabla.'").resetForm();
-						};
-
-						var fnAjaxEliminarItem = function(idprod){
-
-									var formData = new FormData();
-
-									formData.append( "crud-del" , 1 );
-									formData.append( "tabla_bd" , $("#tabla_bd").val() );
-									formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" );
-									formData.append( "idprod" , idprod );
-
-									$.ajax({
-												url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-del",
-												type: "POST",
-												data: formData,
-												cache: false,
-												contentType: false,
-												processData: false,
-												//mientras enviamos el archivo
-												beforeSend: function(){
-													//$("#cargando").show();
-												},
-												//una vez finalizado correctamente
-												success: function(data){
-													fnAjaxRenderTabla();
-													alert(data);
-												},
-												//si ha ocurrido un error
-												error: function(){
-													alert("Error, no se pudo eliminar.");
-												}
-									});
-
-						};
-
-            var fnAjaxRenderTabla = function(){
-
-									var obj = {};
-									var arreglo = [];
-
-									obj["crud-list"] = "1";
-									obj["tabla_bd"] = "'.$this->tabla.'";
-									obj["tabla_where"] = "'.$this->where.'";
-									obj["setTitulo"] = "'.self::getTitulo().'";
-									obj["setEliminar"] = "'.self::getEliminar().'";
-
-									arreglo.push(obj);
-									arreglo.push( '.json_encode( $this->campos_array , JSON_FORCE_OBJECT ).' );
-
-									jsonStr = JSON.stringify(arreglo);
-
-									$.ajax({
-									   url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-list",
-									   data: { datos: jsonStr },
-									   type: "POST",
-									   success: function(response) {
-									      	$("#panel_'.$this->tabla.'").modal("hide");
-									      	$("#div_tabla").html(response);
-									   }
-									});
-              };
-
-              var fnAjaxAdd = function(){
-                    	var formData = new FormData();
-
-											formData.append( "crud-add" , 1 );
-											formData.append( "tabla_bd" , $("#tabla_bd").val() );
-											formData.append( "campo_id" , "'.$this->campos_array[0]["campo"].'" ); //envio el nombre del campo_id para identificarlo
-											'.$form_datos.'
-
-											$.ajax({
-													url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-add",
-													type: "POST",
-													data: formData,
-													cache: false,
-													contentType: false,
-													processData: false,
-													success: function(data){
-														//alert(data);
-														fnAjaxRenderTabla();
-													}
-											});
+					$.ajax({
+							url: "'.CRUD_ROOT.CRUD_FOLDER.'ajax-crud.php/?mode=crud-add",
+							type: "POST",
+							data: formData,
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function(data){
+								//alert(data);
+								ajax_render_table();
+							}
+					});
             	};
 
-            var fnAjaxCompletarFormulario = function(id){
-            	var obj = {};
+            	var ajax_complete_form = function(id){
+            				var obj = {};
 							var arreglo = [];
 
 							obj["crud-completar-formulario"] = "1";
@@ -407,12 +357,11 @@ Class Crud extends Conectar {
 								 cache: false,
 							   success: function(response) {													
 													$("#div_modal").html(response);
-													MostrarPanel("edit");
+													show_modal_panel("edit");
 													
-							   }
+							   			}
 							});
-                        };
-
+        		};
 
                     </script>';
 

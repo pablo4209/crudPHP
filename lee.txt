@@ -1,10 +1,10 @@
 
 REQUISITOS
 -----------------------
-boostrap 4
+boostrap 4 (desarrollado con 4.1)
 iconos con fontawesome
-jquery (desarrollado con 3.3.1)
-jquery validate 
+jquery (desarrollado con v3.3.1)
+jquery validate plugin (desarrollado con v1.19)
 
 
 COMO USAR
@@ -16,4 +16,98 @@ editar config.php:
 	define( "CRUD_ROOT" , "" ); // ACA INDICAR RUTA AL DIRECTORIO PRINCIPAL DEL CRUD EN EL PROYECTO DONDE SE USA
 								// ejemplo: si el directorio del crud esta con respecto a la raiz en "SUBDIR1/CRUD"
 								// 		entonces configuro "SUBDIR1/"
+
+
+
+*	modo de iniciar la clase
+*	-------------------------
+*	IMPORTANTE!
+*	el indice de la tabla siempre debe ser el primer campo, porque asi se asume en la clase,
+*	sin importar si se visualiza o no
+*	- el campo indice siempre se mostrara disabled
+*	--------------
+*	
+	$c = new Crud( 	nombre_tabla, campos, filtro );		
+					
+					nombre_tabla: string con el nombre de la tabla
+					campos:  	  array clave => valor con la configuracion de campos
+			   		filtro:  	  string, filtro simple sql a los resultados a listar, escribir WHERE completo 				  o filtro ORDER BY (ej: "WHERE id_tabla=2" )
+
+
+* 	Parametro campos
+* 	----------------------------------------------
+* 	Recibe un array asociativo de tipo ["clave" => "valor"]
+* 	(campos obligatorios: campo, tipo)
+* 	
+	$array  = [
+				[ 		
+				"campo" 	=> 	"nombre_campo" ,    		//nombre del campo
+				"tipo"		=> 	"tipo_dato" (constante) , 	//const tipo del campo bd (ej: T_HIDDEN, input oculto)
+				"alias"		=> 	"alias" , 					//nombre a mostrar, si "" usa nombre_campo
+				"listar" 	=>	0 ,  		//boolean, si se muestra en el listado
+				"editar"	=>	0 ,			//boolean, si se edita en form
+				"requerido"	=>	1	,		//boolean, requerido en caso de usarse en form
+				"value"		=>	"" ,		//string o en campo select ver documentacion
+				"type"		=>	"text"	,	//son los tipo para input
+				"minlenght"	=> 20	,		//numero
+				"maxlenght"	=> 50	,		//numero
+			  "placeholder" => "frase para control vacio",
+			"extraclass"	=>	""			//clases extra!
+				],
+				[ "campo 2" .... ],
+				[ "campo n" .... ]
+			  ];
+
+
+	tipo
+	----------------------------------------------
+	estas son las posibles constantes con las que se puede setear tipo
+	
+	public static function getType($param){
+             switch ($param) {
+               case tipoDato::T_INT:
+               case tipoDato::T_NUMBER:  return "number";
+               case tipoDato::T_DATETIME:return "datetime";
+               case tipoDato::T_DATE:    return "date";
+               case tipoDato::T_TIME:    return "time";
+               case tipoDato::T_EMAIL:   return "email";
+               case tipoDato::T_PASSWORD:return "password";
+               case tipoDato::T_RESET:   return "reset";
+               case tipoDato::T_TEL:     return "tel";
+               case tipoDato::T_MONTH:   return "month";
+               case tipoDato::T_RANGE:   return "range";
+               case tipoDato::T_COLOR:   return "color";
+               case tipoDato::T_SEARCH:  return "search";
+               case tipoDato::T_URL:     return "url";
+               case tipoDato::T_WEEK:    return "week";
+               case tipoDato::T_BUTTON:  return "button";
+               case tipoDato::T_TEXT:
+               case tipoDato::T_STR:     return "text";
+               default:                  return "text";
+             }
+        }
+	
+	value cuando tipo_dato = tipoDato::T_SELECT
+ 	-----------------------------------------------
+ 	para que se muestre este control, debe recibir un array asociativo para la siguiente funcion:
+		parent::crearSelectTabla($param)
+
+    $param: es un array asociativo: campos "tabla", "id" y "descripcion" son los parametros obligatorios, deben
+    				 coincidir con su respectivo dato en la bd.
+
+    tabla: nombre de la tabla
+	nombre_control: el select toma el name e id html con este valor, si no existe se toma el id
+    id: el valor del campo id es el value los options del select
+    descripcion: el campo descripcion de la Tabla
+    sel: id seleccionado por defecto
+    descripcion2: valor de un campo que se quiera poner como acotacion (ej: dolar [3.40] )
+    where: filtro de la $consulta
+    cssClass: tiene las clases de control bootstrap por defecto y lo tilda como requerido para validate, cambiar el valor reemplaza el default
+    prop: sirve para agregar propiedades al control para ser manipuladas desde js
+
+
+
+
+
+
 
